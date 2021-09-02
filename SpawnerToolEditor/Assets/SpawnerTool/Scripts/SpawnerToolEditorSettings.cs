@@ -4,7 +4,7 @@ using UnityEditor;
 
 namespace SpawnerTool
 {
-    [CreateAssetMenu(fileName = "SpawnerToolEditorSettings", menuName = "SpawnerTool/EditorSettings", order = 1)]
+    [CreateAssetMenu(fileName = "SpawnerToolEditorSettings", menuName = "SpawnerTool/Settings/EditorSettings", order = 2500)]
     public class SpawnerToolEditorSettings : ScriptableObject
     {
         [Header("Configuration Settings")] 

@@ -6,6 +6,7 @@ using UnityEditor;
 
 namespace SpawnerTool
 {
+    [CreateAssetMenu(fileName = "SpawnerInspectorData", menuName = "SpawnerTool/Settings/SpawnerInspectorData", order = 2500)]
     public class SpawnerToolInspectorData : ScriptableObject
     {
         public SpawnEnemyData spawnEnemyData = new SpawnEnemyData();
@@ -21,8 +22,7 @@ namespace SpawnerTool
                     return enemyInfo.blockColor;
                 }
             }
-
-
+            
             return Color.white;
         }
 
@@ -37,6 +37,23 @@ namespace SpawnerTool
                     enemyInfo[i] = temp;
                 }
             }
+        }
+
+        public string CheckEnemyName(string enemyName)
+        {
+            bool exists = false;
+            foreach (var enemy in enemyInfo)
+            {
+                if (enemyName == enemy.name)
+                {
+                    exists = true;
+                }              
+            }
+
+            if (!exists)
+                enemyName = SpawnerToolEditorInspector.unnamed;
+
+            return enemyName;
         }
     }
 
@@ -59,7 +76,7 @@ namespace SpawnerTool
         private SpawnerToolInspectorData sp;
         int selected = 0;
 
-        private const string unnamed = "It has no name";
+        public const string unnamed = "No type";
 
         private void OnEnable()
         {
@@ -104,11 +121,11 @@ namespace SpawnerTool
             List<string> enemyNames = new List<string>();
             enemyNames.Add("Not Defined");
             bool x = false;
-            foreach (var enemy in sp.enemyInfo) // Not defined, a,b,c
+            foreach (var enemy in sp.enemyInfo)
             {
-                enemyNames.Add(enemy.name); //0 = not defined, 1 = a, 2=b, 3=c;
+                enemyNames.Add(enemy.name); 
                 
-                if (enemy.name == sp.spawnEnemyData.enemyType) //"undasjdan"
+                if (enemy.name == sp.spawnEnemyData.enemyType)
                 {
                     selected = enemyNames.IndexOf(enemy.name);
                     x = true;
@@ -124,6 +141,10 @@ namespace SpawnerTool
                 if (selected > 0)
                 {
                     sp.spawnEnemyData.enemyType = enemyNames[selected];
+                }
+                else
+                {
+                    sp.spawnEnemyData.enemyType = unnamed;
                 }
             }
         }

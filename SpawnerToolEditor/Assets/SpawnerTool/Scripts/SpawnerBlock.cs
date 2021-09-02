@@ -80,18 +80,12 @@ namespace SpawnerTool
             GUI.color = selected ? _highlightColor : _color;
 
             GUIStyle label = new GUIStyle("label");
-
             Color color = GUI.color;
-
             var l = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b;
             color = l < 0.5 ? Color.white : Color.black;
-
-            Debug.Log(spawnEnemyData.enemyType + " " + l);
             label.normal.textColor = color;
             label.wordWrap = true;
-            
             label.fontSize = Mathf.RoundToInt(SpawnerToolsUtility.Remap(spawnEnemyData.enemyType.Length, 1, 20, 50, 10));
-
 
             GUI.DrawTexture(_rect, texture);
             GUI.color = guiColor;
@@ -127,15 +121,6 @@ namespace SpawnerTool
             _size.y = 100f;
 
             _rect.size = _size;
-        }
-    }
-
-    public static class SpawnerToolsUtility
-    {
-        public static float Remap(float input, float oldLow, float oldHigh, float newLow, float newHigh)
-        {
-            float t = Mathf.InverseLerp(oldLow, oldHigh, input);
-            return Mathf.Lerp(newLow, newHigh, t);
         }
     }
 }

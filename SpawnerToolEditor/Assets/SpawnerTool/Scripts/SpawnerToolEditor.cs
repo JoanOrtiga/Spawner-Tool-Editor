@@ -11,7 +11,9 @@ namespace SpawnerTool
         #region Variables
 
         public SpawnerGraph currentGraph;
+        private static SpawnerToolInspectorData _spawnerInspector;
         private static SpawnerToolEditorSettings _editorSettings;
+        private static SpawnerToolInspectorData _inspectorData;
         private static SpawnerToolEditor _window;
 
         private const int ScrollBarPixelSize = 13;
@@ -65,8 +67,6 @@ namespace SpawnerTool
         private SpawnerBlock _selectedSpawnerBlock = null;
         private List<SpawnerBlock> _blocks = new List<SpawnerBlock>();
 
-        private static SpawnerToolInspectorData _spawnerToolInspectorData;
-
         //INPUT
         private bool _inputControlPressed = false;
         private const float HorizontalScrollSpeed = 7f;
@@ -79,30 +79,28 @@ namespace SpawnerTool
         [MenuItem("SpawnerTool/Spawner")]
         public static void ShowWindow()
         {
-            _window =
-                EditorWindow.GetWindow(typeof(SpawnerToolEditor), false, "SpawnerTool", focusedWindow.hasFocus) as
+            EditorWindow.CreateWindow<SpawnerToolEditor>("SpawnerTool");
+            _window = EditorWindow.GetWindow(typeof(SpawnerToolEditor), false, "SpawnerTool", focusedWindow.hasFocus) as
                     SpawnerToolEditor;
-            //_window = EditorWindow.GetWindow<SpawnerToolEditor>(false, "SpawnerTool", focusedWindow.hasFocus);
-            // _window = EditorWindow.GetWindow(typeof(SpawnerToolEditor), true, "SpawnerTool", focusedWindow.hasFocus);
+            
             _window.minSize = new Vector2(500 + MarginToPlayField.x + ScrollBarPixelSize,
                 500 + MarginToPlayField.y + ScrollBarPixelSize - UnityWindowPixelsBug);
-
             _window.wantsMouseEnterLeaveWindow = true;
             _window.wantsMouseMove = true;
-            EditorSettingsLoad();
+            if (_editorSettings == null)
+                EditorSettingsLoad();
+            if (_inspectorData == null)
+                InspectorDataLoad();
         }
 
         private void OnEnable()
         {
             if (_editorSettings == null)
                 EditorSettingsLoad();
-            // ChangeSpawnerGraph((SpawnerGraph)EditorGUILayout.ObjectField(currentGraph, typeof(SpawnerGraph), false, GUILayout.Width(200)));
-            //_window = GetWindow<SpawnerToolEditor>();
-            //_window.titleContent.text = "SpawnerTool";
+            if (_inspectorData == null)
+                InspectorDataLoad();
 
-            //EditorSettingsLoad();
             Selection.selectionChanged += SelectionChanged;
-            
         }
 
         private void OnDisable()
@@ -112,15 +110,16 @@ namespace SpawnerTool
                 Save(int.Parse(_round));
             }
 
+            SaveInspectorData();
+            
             Selection.selectionChanged -= SelectionChanged;
-            DestroyImmediate(_spawnerToolInspectorData);
         }
 
         private void OnFocus()
         {
-            if (_spawnerToolInspectorData != null)
+            if (_inspectorData != null)
             {
-                Selection.activeObject = _spawnerToolInspectorData;
+                Selection.activeObject = _spawnerInspector;
             }
         }
 
@@ -136,12 +135,38 @@ namespace SpawnerTool
                     Repaint();
                 }
             }
+            
+            SaveInspectorData();
         }
 
-        void CreateInspector()
+        private static void InspectorDataLoad()
         {
-            _spawnerToolInspectorData = CreateInstance<SpawnerToolInspectorData>();
-            Selection.activeObject = _spawnerToolInspectorData;
+            string[] guids = AssetDatabase.FindAssets("SpawnerInspectorData t:" + typeof(SpawnerToolInspectorData));
+            if (guids.Length == 0)
+            {
+                Debug.LogError(
+                    "SPAWNERTOOL: No spawner inspector data found. Make sure original 'SpawnerInspectorData.asset' is in the project.");
+                return;
+            }
+
+            if (guids.Length > 1)
+            {
+                Debug.LogWarning(
+                    "SPAWNERTOOL: More than one spawner inspector data found. That may cause problems. Make sure only original 'SpawnerInspectorData.asset' is in the project.");
+            }
+
+            string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+            _inspectorData =
+                AssetDatabase.LoadAssetAtPath(path, typeof(SpawnerToolInspectorData)) as SpawnerToolInspectorData;
+
+            if (_editorSettings == null)
+            {
+                Debug.LogError("SPAWNERTOOL: SpawnerInspectorData not found");
+            }
+
+            _spawnerInspector = CreateInstance<SpawnerToolInspectorData>();
+            LoadInspectorData();
+            Selection.activeObject = _spawnerInspector;
         }
 
         private static void EditorSettingsLoad()
@@ -166,7 +191,7 @@ namespace SpawnerTool
                 AssetDatabase.LoadAssetAtPath(path, typeof(SpawnerToolEditorSettings)) as SpawnerToolEditorSettings;
             if (_editorSettings == null)
             {
-                Debug.LogError("Editor settings not found");
+                Debug.LogError("SPAWNERTOOL: Editor settings not found");
             }
 
             SpawnerBlock.texture = _editorSettings.whiteTexture;
@@ -248,14 +273,22 @@ namespace SpawnerTool
 
         private void OnInspectorUpdate()
         {
-            
+            if (currentGraph is null)
+                return;
+
             if (_selectedSpawnerBlock != null)
             {
                 SaveInspectorValues();
-                _selectedSpawnerBlock.UpdateTime(_spawnerToolInspectorData.spawnEnemyData.timeToStartSpawning);
+                _selectedSpawnerBlock.UpdateTime(_spawnerInspector.spawnEnemyData.timeToStartSpawning);
                 _selectedSpawnerBlock.UpdateSize();
             }
-            
+
+            foreach (var block in _blocks)
+            {
+                block.spawnEnemyData.enemyType = _spawnerInspector.CheckEnemyName(block.spawnEnemyData.enemyType);
+                block.SetColor(_spawnerInspector.GetEnemyColor(block.spawnEnemyData.enemyType));
+            }
+
             Repaint();
         }
 
@@ -267,8 +300,12 @@ namespace SpawnerTool
                 return;
             }
 
-            if (_spawnerToolInspectorData == null)
-                CreateInspector();
+            if (_inspectorData == null)
+            {
+                Debug.Log("hola");
+                InspectorDataLoad(); 
+            }
+                
 
             _screenSize = new Vector2(position.width, position.height - UnityWindowPixelsBug);
 
@@ -296,7 +333,7 @@ namespace SpawnerTool
         {
             if (_selectedSpawnerBlock == null)
                 return;
-            
+
             UpdateInspector();
             //SaveInspectorValues();
             //_selectedBlock.UpdateSize();
@@ -310,12 +347,13 @@ namespace SpawnerTool
         {
             if (_selectedSpawnerBlock == null)
                 return;
-            
-            string enemyType = _selectedSpawnerBlock.spawnEnemyData.enemyType;
-            
-            _color = EditorGUI.ColorField(_rectColorPicker, new GUIContent(""), _spawnerToolInspectorData.GetEnemyColor(enemyType), true, false, false);
 
-            _spawnerToolInspectorData.SetEnemyColor(enemyType, _color);
+            string enemyType = _selectedSpawnerBlock.spawnEnemyData.enemyType;
+
+            _color = EditorGUI.ColorField(_rectColorPicker, new GUIContent(""), _spawnerInspector.GetEnemyColor(enemyType),
+                true, false, false);
+
+            _spawnerInspector.SetEnemyColor(enemyType, _color);
 
             UpdateBlockColors();
         }
@@ -728,7 +766,7 @@ namespace SpawnerTool
             Select(spawnerBlock);
             _movingBlock = true;
             _blocks.Add(_selectedSpawnerBlock);
-            _spawnerToolInspectorData.init = true;
+            _spawnerInspector.init = true;
             Repaint();
         }
 
@@ -783,7 +821,7 @@ namespace SpawnerTool
         {
             foreach (var block in _blocks)
             {
-                block.SetColor(_spawnerToolInspectorData.GetEnemyColor(block.spawnEnemyData.enemyType));
+                block.SetColor(_spawnerInspector.GetEnemyColor(block.spawnEnemyData.enemyType));
             }
         }
 
@@ -852,18 +890,32 @@ namespace SpawnerTool
         {
             if (_selectedSpawnerBlock != null)
             {
-                _spawnerToolInspectorData.spawnEnemyData = _selectedSpawnerBlock.spawnEnemyData;
+                _spawnerInspector.spawnEnemyData = _selectedSpawnerBlock.spawnEnemyData;
             }
         }
 
         void SaveInspectorValues()
         {
-            if (_selectedSpawnerBlock.spawnEnemyData.enemyType != _spawnerToolInspectorData.spawnEnemyData.enemyType)
+            if (_selectedSpawnerBlock.spawnEnemyData.enemyType != _spawnerInspector.spawnEnemyData.enemyType)
             {
-                _selectedSpawnerBlock.SetColor(_spawnerToolInspectorData.GetEnemyColor(_spawnerToolInspectorData.spawnEnemyData.enemyType));
+                _selectedSpawnerBlock.SetColor(_spawnerInspector.GetEnemyColor(_spawnerInspector.spawnEnemyData.enemyType));
             }
 
-            _selectedSpawnerBlock.spawnEnemyData = _spawnerToolInspectorData.spawnEnemyData;
+            _selectedSpawnerBlock.spawnEnemyData = _spawnerInspector.spawnEnemyData;
+        }
+
+        static void SaveInspectorData()
+        {
+            _inspectorData.init = _spawnerInspector.init;
+            _inspectorData.enemyInfo = _spawnerInspector.enemyInfo;
+            _inspectorData.spawnEnemyData = _spawnerInspector.spawnEnemyData;
+        }
+
+        static void LoadInspectorData()
+        {
+            _spawnerInspector.init = _inspectorData.init;
+            _spawnerInspector.enemyInfo = _inspectorData.enemyInfo;
+            _spawnerInspector.spawnEnemyData = _inspectorData.spawnEnemyData;
         }
 
         #endregion

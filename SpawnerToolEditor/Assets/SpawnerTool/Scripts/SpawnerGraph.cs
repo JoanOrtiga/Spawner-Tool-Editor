@@ -6,7 +6,7 @@ using UnityEditor;
 
 namespace SpawnerTool
 {
-    [CreateAssetMenu(fileName = "RoundsData", menuName = "SpawnerTool/SpawnerGraph", order = 0)]
+    [CreateAssetMenu(fileName = "RoundsData", menuName = "SpawnerTool/SpawnerGraph", order = -5)]
     public class SpawnerGraph : ScriptableObject
     {
         public List<Round> rounds = new List<Round>();
