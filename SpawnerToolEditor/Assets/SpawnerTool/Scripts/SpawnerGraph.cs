@@ -29,7 +29,7 @@ namespace SpawnerTool
     }
 
     [System.Serializable]
-    public struct Round
+    public class Round
     {
         public List<SpawnEnemyData> spawningEnemiesData;
         public float totalRoundTime;
@@ -72,7 +72,6 @@ namespace SpawnerTool
         public SpawnEnemyData(int spawnPointID = 1, float timeToStartSpawning = 0, int howManyEnemies = 5,
             string enemyType = "", float timeBetweenSpawn = 1)
         {
-            Debug.Log(howManyEnemies);
             this.spawnPointID = spawnPointID;
             this.timeToStartSpawning = timeToStartSpawning;
             this.howManyEnemies = howManyEnemies;
@@ -91,51 +90,4 @@ namespace SpawnerTool
             this.currentTrack = 0;  
         }
     }
-    
-    public class SpawnerToolInspectorData : ScriptableObject
-    {
-        public SpawnEnemyData spawnEnemyData = new SpawnEnemyData();
-        public bool init = false;
-        public List<EnemyInfo> enemyInfo = new List<EnemyInfo>();
-
-        public Color GetEnemyColor(string enemyName)
-        {
-            foreach (var enemyInfo in enemyInfo)
-            {
-                if (enemyInfo.name == enemyName)
-                {
-                    return enemyInfo.blockColor;
-                }
-            }
-            
-            return Color.white;
-        }
-
-        public void SetEnemyColor(string enemyName, Color enemyBlockColor)
-        {
-            for (int i = 0; i < enemyInfo.Count; i++)
-            {
-                EnemyInfo temp = enemyInfo[i];
-                if (temp.name == enemyName)
-                {
-                    temp.blockColor = enemyBlockColor;
-                    enemyInfo[i] = temp;
-                }
-            }
-        }
-    }
-
-    [Serializable]
-    public struct EnemyInfo
-    {
-        public string name;
-        public Color blockColor;
-
-        public EnemyInfo(string name, Color color)
-        {
-            this.name = name;
-            this.blockColor = color;
-        }
-    }
 }
-

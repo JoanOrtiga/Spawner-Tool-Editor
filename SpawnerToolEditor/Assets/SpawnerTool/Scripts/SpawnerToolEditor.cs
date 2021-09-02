@@ -1,125 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Numerics;
 using UnityEditor;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using System.Text.RegularExpressions;
-using Color = UnityEngine.Color;
-using Object = UnityEngine.Object;
-using UnityEditor.IMGUI.Controls;
-using UnityEditor.UI;
-using Vector2 = UnityEngine.Vector2;
 
 namespace SpawnerTool
 {
-    public class Block
-    {
-        private Rect _rect;
-        private Vector2 _size;
-        private Color _color;
-        private Color _highlightColor;
-        public static Texture2D texture;
-
-        private bool selected;
-
-        public SpawnEnemyData spawnEnemyData;
-
-        public Block(Vector2 position, Vector2 size, SpawnEnemyData sp = null)
-        {
-            spawnEnemyData = sp is null ? new SpawnEnemyData() : sp;
-
-            _size.x = Mathf.Max(size.x, 20.0f);
-
-            _size = size;
-            _rect = new Rect(position.x, position.y, size.x, size.y);
-            _color = Color.white;
-            _highlightColor = Color.yellow;
-        }
-
-        public Block(Rect rect, SpawnEnemyData sp = null)
-        {
-            spawnEnemyData = sp is null ? new SpawnEnemyData() : sp;
-
-            rect.width = Mathf.Max(rect.width, 20.0f);
-
-            _size = rect.size;
-            _rect = rect;
-            _color = Color.white;
-            _highlightColor = Color.yellow;
-        }
-
-        public void Update(Vector2 mouseDrag, float time, int track)
-        {
-            spawnEnemyData.currentTrack = track;
-            spawnEnemyData.timeToStartSpawning =
-                time / (SpawnerToolEditor.CellSize * SpawnerToolEditor.CellPixelSize.x);
-            _rect = new Rect(mouseDrag.x, mouseDrag.y, _size.x, _size.y);
-        }
-
-        public void UpdateTime(float time)
-        {
-            spawnEnemyData.timeToStartSpawning = time;
-            _rect.x = time * (SpawnerToolEditor.CellSize * SpawnerToolEditor.CellPixelSize.x);
-        }
-
-        public void ChangeSize(Vector2 size)
-        {
-            size.x = Mathf.Max(size.x, 20.0f);
-            _size = size;
-        }
-
-        public void Select(bool select)
-        {
-            selected = select;
-        }
-
-        public bool Contains(Vector2 position)
-        {
-            if (_rect.Contains(position))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public void Draw()
-        {
-            Color guiColor = GUI.color;
-            GUI.color = selected ? _highlightColor : _color;
-            GUI.DrawTexture(_rect, texture);
-            GUI.color = guiColor;
-        }
-
-        public void SetColor(Color color)
-        {
-            _color = color;
-        }
-
-        public Color GetColor()
-        {
-            return _color;
-        }
-
-        public Rect GetRect()
-        {
-            return _rect;
-        }
-
-        public void UpdateSize()
-        {
-            _size.x = SpawnerToolEditor.CellPixelSize.x * SpawnerToolEditor.CellSize *
-                      (spawnEnemyData.howManyEnemies * spawnEnemyData.timeBetweenSpawn);
-            _size.y = 100f;
-
-            _rect.size = _size;
-        }
-    }
-
     public class SpawnerToolEditor : EditorWindow
     {
         #region Variables
@@ -176,8 +62,8 @@ namespace SpawnerTool
         private Rect _rectPlaygroundFill;
 
         //BLOCKS
-        private Block _selectedBlock = null;
-        private List<Block> _blocks = new List<Block>();
+        private SpawnerBlock _selectedSpawnerBlock = null;
+        private List<SpawnerBlock> _blocks = new List<SpawnerBlock>();
 
         private static SpawnerToolInspectorData _spawnerToolInspectorData;
 
@@ -216,6 +102,7 @@ namespace SpawnerTool
 
             //EditorSettingsLoad();
             Selection.selectionChanged += SelectionChanged;
+            
         }
 
         private void OnDisable()
@@ -239,13 +126,13 @@ namespace SpawnerTool
 
         private void OnLostFocus()
         {
-            if (_selectedBlock != null)
+            if (_selectedSpawnerBlock != null)
             {
                 Rect outOfBounds = _rectPlaygroundFill;
 
-                if (!outOfBounds.Contains(_selectedBlock.GetRect().position))
+                if (!outOfBounds.Contains(_selectedSpawnerBlock.GetRect().position))
                 {
-                    _blocks.Remove(_selectedBlock);
+                    _blocks.Remove(_selectedSpawnerBlock);
                     Repaint();
                 }
             }
@@ -282,7 +169,7 @@ namespace SpawnerTool
                 Debug.LogError("Editor settings not found");
             }
 
-            Block.texture = _editorSettings.whiteTexture;
+            SpawnerBlock.texture = _editorSettings.whiteTexture;
         }
 
         void SelectionChanged()
@@ -361,13 +248,15 @@ namespace SpawnerTool
 
         private void OnInspectorUpdate()
         {
-            /*
-                        if (_selectedBlock != null)
-                        {
-                            _selectedBlock.UpdateTime(_spawnerToolInspectorData.spawnEnemyData.timeToStartSpawning);
-                        }
-                        
-                        Repaint();*/
+            
+            if (_selectedSpawnerBlock != null)
+            {
+                SaveInspectorValues();
+                _selectedSpawnerBlock.UpdateTime(_spawnerToolInspectorData.spawnEnemyData.timeToStartSpawning);
+                _selectedSpawnerBlock.UpdateSize();
+            }
+            
+            Repaint();
         }
 
         void OnGUI()
@@ -405,10 +294,10 @@ namespace SpawnerTool
 
         private void UpdateSelectedBlock()
         {
-            if (_selectedBlock == null)
+            if (_selectedSpawnerBlock == null)
                 return;
-
-            //UpdateInspector();
+            
+            UpdateInspector();
             //SaveInspectorValues();
             //_selectedBlock.UpdateSize();
         }
@@ -419,7 +308,16 @@ namespace SpawnerTool
 
         void ColorPicker()
         {
-            _color = EditorGUI.ColorField(_rectColorPicker, new GUIContent(""), _color, true, false, false);
+            if (_selectedSpawnerBlock == null)
+                return;
+            
+            string enemyType = _selectedSpawnerBlock.spawnEnemyData.enemyType;
+            
+            _color = EditorGUI.ColorField(_rectColorPicker, new GUIContent(""), _spawnerToolInspectorData.GetEnemyColor(enemyType), true, false, false);
+
+            _spawnerToolInspectorData.SetEnemyColor(enemyType, _color);
+
+            UpdateBlockColors();
         }
 
         void EnemyBlock()
@@ -452,7 +350,7 @@ namespace SpawnerTool
                 {
                     _blocks[i].Draw();
 
-                    if (_selectedBlock != _blocks[i])
+                    if (_selectedSpawnerBlock != _blocks[i])
                     {
                         if (!_rectPlaygroundFill.Contains(_blocks[i].GetRect().position))
                         {
@@ -741,14 +639,14 @@ namespace SpawnerTool
                 if (e.keyCode == KeyCode.L)
                 {
                     _blocks.Clear();
-                    _selectedBlock = null;
+                    _selectedSpawnerBlock = null;
                     Repaint();
                 }
             }
 
             if (e.type == EventType.MouseDrag)
             {
-                if (_selectedBlock is null)
+                if (_selectedSpawnerBlock is null)
                     return;
 
                 if (_movingBlock)
@@ -759,10 +657,10 @@ namespace SpawnerTool
 
             if (e.type == EventType.MouseDown)
             {
-                if (_selectedBlock is null)
+                if (_selectedSpawnerBlock is null)
                     return;
 
-                if (_selectedBlock.Contains(mousePositionInsidePlayground))
+                if (_selectedSpawnerBlock.Contains(mousePositionInsidePlayground))
                 {
                     _movingBlock = true;
                 }
@@ -772,14 +670,14 @@ namespace SpawnerTool
             {
                 if (_movingBlock is false)
                     return;
-                if (_selectedBlock is null)
+                if (_selectedSpawnerBlock is null)
                     return;
 
                 Rect outOfBounds = _rectPlaygroundFill;
 
-                if (!outOfBounds.Contains(_selectedBlock.GetRect().position - _scrollPosition))
+                if (!outOfBounds.Contains(_selectedSpawnerBlock.GetRect().position - _scrollPosition))
                 {
-                    RemoveBlock(_selectedBlock);
+                    RemoveBlock(_selectedSpawnerBlock);
                 }
             }
 
@@ -790,32 +688,32 @@ namespace SpawnerTool
 
             if (e.type == EventType.KeyDown)
             {
-                if (_selectedBlock is null)
+                if (_selectedSpawnerBlock is null)
                     return;
 
                 if (e.keyCode == KeyCode.Delete)
                 {
-                    RemoveBlock(_selectedBlock);
+                    RemoveBlock(_selectedSpawnerBlock);
                 }
             }
 
             if (e.type == EventType.MouseUp)
             {
-                if (_selectedBlock != null)
+                if (_selectedSpawnerBlock != null)
                     if (_rectBin.Contains(mousePosition))
-                        RemoveBlock(_selectedBlock);
+                        RemoveBlock(_selectedSpawnerBlock);
             }
 
             if (e.type == EventType.MouseLeaveWindow)
             {
-                if (_selectedBlock is null)
+                if (_selectedSpawnerBlock is null)
                     return;
 
                 Rect outOfBounds = new Rect(0, 0, _width, _height);
 
-                if (!outOfBounds.Contains(_selectedBlock.GetRect().position))
+                if (!outOfBounds.Contains(_selectedSpawnerBlock.GetRect().position))
                 {
-                    RemoveBlock(_selectedBlock);
+                    RemoveBlock(_selectedSpawnerBlock);
                 }
                 else
                 {
@@ -826,10 +724,10 @@ namespace SpawnerTool
 
         void NewBlock(Vector2 mousePosition)
         {
-            Block block = new Block(mousePosition - new Vector2(50, 50), new Vector2(100, 100));
-            Select(block);
+            SpawnerBlock spawnerBlock = new SpawnerBlock(mousePosition - new Vector2(50, 50), new Vector2(100, 100));
+            Select(spawnerBlock);
             _movingBlock = true;
-            _blocks.Add(_selectedBlock);
+            _blocks.Add(_selectedSpawnerBlock);
             _spawnerToolInspectorData.init = true;
             Repaint();
         }
@@ -840,23 +738,23 @@ namespace SpawnerTool
             {
                 if (_blocks[i].Contains(mousePositionInsidePlayground))
                 {
-                    if (_blocks[i] != _selectedBlock)
+                    if (_blocks[i] != _selectedSpawnerBlock)
                         Select(_blocks[i]);
                 }
             }
         }
 
-        void Select(Block block)
+        void Select(SpawnerBlock spawnerBlock)
         {
-            _selectedBlock?.Select(false);
-            _selectedBlock = block;
-            _selectedBlock.Select(true);
+            _selectedSpawnerBlock?.Select(false);
+            _selectedSpawnerBlock = spawnerBlock;
+            _selectedSpawnerBlock.Select(true);
             UpdateInspector();
         }
 
         void MoveBlock(Event e)
         {
-            Vector2 movePosition = _selectedBlock.GetRect().position;
+            Vector2 movePosition = _selectedSpawnerBlock.GetRect().position;
             Vector2 mouse = e.mousePosition - MarginToPlayField + _scrollPosition;
             float y = (Mathf.CeilToInt((mouse.y) / 100.0f) - 1) * 100;
             float x = (Mathf.CeilToInt((mouse.x) / 20.0f) - 1) * 20;
@@ -864,17 +762,30 @@ namespace SpawnerTool
             movePosition.x = _gridMagnet ? x : e.mousePosition.x - MarginToPlayField.x + _scrollPosition.x;
             movePosition.y = y;
 
-            _selectedBlock.Update(movePosition, movePosition.x, (Mathf.CeilToInt((mouse.y) / 100.0f) - 1));
+            _selectedSpawnerBlock.Update(movePosition, movePosition.x, (Mathf.CeilToInt((mouse.y) / 100.0f) - 1));
             Repaint();
         }
 
-        void RemoveBlock(Block removeBlock)
+        void RemoveBlock(SpawnerBlock removeSpawnerBlock)
         {
-            _blocks.Remove(removeBlock);
+            _blocks.Remove(removeSpawnerBlock);
+            _selectedSpawnerBlock = null;
             Repaint();
         }
 
         #endregion
+
+        #endregion
+
+        #region Other
+
+        public void UpdateBlockColors()
+        {
+            foreach (var block in _blocks)
+            {
+                block.SetColor(_spawnerToolInspectorData.GetEnemyColor(block.spawnEnemyData.enemyType));
+            }
+        }
 
         #endregion
 
@@ -908,8 +819,8 @@ namespace SpawnerTool
                 newBlockRect.width = CellPixelSize.x * CellSize *
                                      (enemySpawnData.howManyEnemies * enemySpawnData.timeBetweenSpawn);
                 newBlockRect.height = 100f;
-                Block block = new Block(newBlockRect, enemySpawnData);
-                _blocks.Add(block);
+                SpawnerBlock spawnerBlock = new SpawnerBlock(newBlockRect, enemySpawnData);
+                _blocks.Add(spawnerBlock);
             }
         }
 
@@ -925,7 +836,7 @@ namespace SpawnerTool
 
             Round savedRound = new Round(new List<SpawnEnemyData>(), float.Parse(_totalTime), int.Parse(_tracks));
 
-            foreach (Block block in _blocks)
+            foreach (SpawnerBlock block in _blocks)
             {
                 savedRound.spawningEnemiesData.Add(block.spawnEnemyData);
             }
@@ -939,141 +850,22 @@ namespace SpawnerTool
 
         void UpdateInspector()
         {
-            if (_selectedBlock != null)
+            if (_selectedSpawnerBlock != null)
             {
-                _spawnerToolInspectorData.spawnEnemyData = _selectedBlock.spawnEnemyData;
+                _spawnerToolInspectorData.spawnEnemyData = _selectedSpawnerBlock.spawnEnemyData;
             }
         }
 
         void SaveInspectorValues()
         {
-            if (_selectedBlock.spawnEnemyData.enemyType != _spawnerToolInspectorData.spawnEnemyData.enemyType)
+            if (_selectedSpawnerBlock.spawnEnemyData.enemyType != _spawnerToolInspectorData.spawnEnemyData.enemyType)
             {
-                _selectedBlock.SetColor(_spawnerToolInspectorData.GetEnemyColor(_spawnerToolInspectorData.spawnEnemyData.enemyType));
+                _selectedSpawnerBlock.SetColor(_spawnerToolInspectorData.GetEnemyColor(_spawnerToolInspectorData.spawnEnemyData.enemyType));
             }
 
-            _selectedBlock.spawnEnemyData = _spawnerToolInspectorData.spawnEnemyData;
+            _selectedSpawnerBlock.spawnEnemyData = _spawnerToolInspectorData.spawnEnemyData;
         }
 
         #endregion
-    }
-
-    [CustomEditor(typeof(SpawnerToolInspectorData))]
-    public class SpawnerToolEditorInspector : Editor
-    {
-        int selected = 0;
-        private bool enemyColorsFoldout = false;
-
-        private void OnEnable()
-        {
-            SpawnerToolInspectorData sp = target as SpawnerToolInspectorData;
-
-            if (sp == null)
-                return;
-
-            ValidateValue(ref sp.spawnEnemyData.howManyEnemies, 1);
-            ValidateValue(ref sp.spawnEnemyData.spawnPointID, 0);
-            ValidateValue(ref sp.spawnEnemyData.timeBetweenSpawn, 0.01f);
-            ValidateValue(ref sp.spawnEnemyData.timeToStartSpawning, 0.0f);
-        }
-
-        public override void OnInspectorGUI()
-        {
-            SpawnerToolInspectorData sp = target as SpawnerToolInspectorData;
-
-            sp.spawnEnemyData.spawnPointID = EditorGUILayout.IntField("Spawn point ID", sp.spawnEnemyData.spawnPointID);
-            sp.spawnEnemyData.howManyEnemies =
-                EditorGUILayout.IntField("How many enemies", sp.spawnEnemyData.howManyEnemies);
-
-            sp.spawnEnemyData.timeBetweenSpawn =
-                EditorGUILayout.FloatField("Time between spawns", sp.spawnEnemyData.timeBetweenSpawn);
-            sp.spawnEnemyData.timeToStartSpawning =
-                EditorGUILayout.FloatField("Time to start Spawning", sp.spawnEnemyData.timeToStartSpawning);
-
-            List<string> enemyNames = new List<string>();
-            foreach (var enemy in sp.enemyInfo)
-            {
-                enemyNames.Add(enemy.name);
-            }
-           
-            selected = EditorGUILayout.Popup("EnemyType", selected, enemyNames.ToArray());
-
-            GUIStyle title = new GUIStyle(GUI.skin.label);
-            title.fontSize = 13;
-            title.fontStyle = FontStyle.Bold;
-            EditorGUILayout.Space(30);
-            EditorGUILayout.LabelField(new GUIContent("SpawnerTool Project Settings", "Here is a tooltip"), title,
-                GUILayout.Height(20));
-            EditorGUILayout.Space();
-
-            var enemyInfo = serializedObject.FindProperty("enemyInfo");
-            EditorGUILayout.PropertyField(enemyInfo, new GUIContent("Enemy list"), true);
-            serializedObject.Update();
-
-            CheckEnemyNames(sp);
-
-            //enemyColorsFoldout = EditorGUILayout.Foldout(enemyColorsFoldout, new GUIContent("EnemyColors"));
-            /* if (enemyColorsFoldout)
-             {
-                 if (sp.enemyNames.Count == 0)
-                 {
-                     EditorGUILayout.HelpBox("There aren't any Enemy Names.", MessageType.Info);
-                 }
-                 
-                 foreach (string enemyName in sp.enemyNames)
-                 {
-                     string tempName;
-                     if (enemyName == string.Empty)
-                         tempName = "Unnamed";
-                     else
-                         tempName = enemyName;
-                     
-                     
-                     sp.enemyColorBlocks[sp.enemyNames.IndexOf(enemyName)] = EditorGUILayout.ColorField(tempName, sp.enemyColorBlocks[sp.enemyNames.IndexOf(enemyName)]);
-                 }
-             }*/
-            if (Event.current.type == EventType.Used || sp.init)
-            {
-                sp.init = false;
-                ValidateValue(ref sp.spawnEnemyData.howManyEnemies, 1);
-                ValidateValue(ref sp.spawnEnemyData.spawnPointID, 0);
-                ValidateValue(ref sp.spawnEnemyData.timeBetweenSpawn, 0.01f);
-                ValidateValue(ref sp.spawnEnemyData.timeToStartSpawning, 0.0f);
-            }
-        }
-
-        void CheckEnemyNames(SpawnerToolInspectorData sp)
-        {
-            bool wrong = false;
-            foreach (EnemyInfo enemyInfo in sp.enemyInfo)
-            {
-                if (enemyInfo.name == string.Empty)
-                    wrong = true;
-            }
-
-            if (wrong)
-            {
-                EditorGUILayout.HelpBox("There's one empty name. Please delete or change it. Things might not work.",
-                    MessageType.Error);
-                EditorGUILayout.Space(10);
-            }
-
-            wrong = sp.enemyInfo.GroupBy(n => n).Any(g => g.Count() > 1);
-            if (wrong)
-            {
-                EditorGUILayout.HelpBox("There are duplicated names.", MessageType.Error);
-                EditorGUILayout.Space(10);
-            }
-        }
-
-        private void ValidateValue(ref float value, float minValue)
-        {
-            value = Mathf.Max(value, minValue);
-        }
-
-        private void ValidateValue(ref int value, int minValue)
-        {
-            value = Mathf.Max(value, minValue);
-        }
     }
 }
