@@ -13,13 +13,17 @@ MonoBehaviour:
   m_Name: SpawnerInspectorData
   m_EditorClassIdentifier: 
   spawnEnemyData:
-    enemyType: No type
+    enemyType: sdfdfsjjjjjjjj
     spawnPointID: 1
     howManyEnemies: 5
-    timeToStartSpawning: 6
+    timeToStartSpawning: 16
     timeBetweenSpawn: 1
-    currentTrack: 1
+    currentTrack: 2
   init: 0
   enemyInfo:
-  - name: hv
-    blockColor: {r: 1, g: 0, b: 0, a: 0}
+  - name: Fast
+    blockColor: {r: 0.8782077, g: 1, b: 0.8726415, a: 0}
+  - name: Slow
+    blockColor: {r: 0.08620509, g: 0.2735849, b: 0.0761392, a: 0}
+  - name: sdfdfsjjjjjjjj
+    blockColor: {r: 1, g: 0, b: 0.04843235, a: 0}

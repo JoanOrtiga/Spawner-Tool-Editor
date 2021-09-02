@@ -434,6 +434,8 @@ namespace SpawnerTool
             roundField.alignment = TextAnchor.MiddleCenter;
             roundField.fontStyle = FontStyle.Bold;
 
+            string lastRound = _round;
+            
             _round = GUI.TextField(_rectRoundTextField, _round, _editorSettings.maxCharactersRounds, roundField);
             _round = Regex.Replace(_round, @"[^0-9]", "");
 
@@ -443,6 +445,12 @@ namespace SpawnerTool
             if (int.Parse(_round) > _editorSettings.maxRounds)
             {
                 _round = _editorSettings.maxRounds.ToString();
+            }
+
+            if (_round != lastRound)
+            {
+                Save(int.Parse(lastRound));
+                Load(int.Parse(_round));
             }
         }
 
@@ -561,10 +569,18 @@ namespace SpawnerTool
                             _round = "0";
                         }
 
+                        string lastRound = _round;
+
                         _round = (int.Parse(_round) - 1).ToString();
                         if (int.Parse(_round) < 0)
                         {
                             _round = "0";
+                        }
+                        
+                        if (_round != lastRound)
+                        {
+                            Save(int.Parse(lastRound));
+                            Load(int.Parse(_round));
                         }
                     }
                     else
@@ -574,10 +590,18 @@ namespace SpawnerTool
                             _round = "0";
                         }
 
+                        string lastRound = _round;
+
                         _round = (int.Parse(_round) + 1).ToString();
                         if (int.Parse(_round) > _editorSettings.maxRounds)
                         {
                             _round = _editorSettings.maxRounds.ToString();
+                        }
+                        
+                        if (_round != lastRound)
+                        {
+                            Save(int.Parse(lastRound));
+                            Load(int.Parse(_round));
                         }
                     }
 
