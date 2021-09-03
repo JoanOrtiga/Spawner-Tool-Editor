@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
 namespace SpawnerTool
 {
@@ -10,22 +9,25 @@ namespace SpawnerTool
     public class SpawnerGraph : ScriptableObject
     {
         public List<Round> rounds = new List<Round>();
-        
+
+#if UNITY_EDITOR
         [UnityEditor.Callbacks.OnOpenAsset(1)]
         public static bool OnOpenAsset(int instanceID, int line)
         {
-            string assetPath = AssetDatabase.GetAssetPath(instanceID);
-            SpawnerGraph scriptableObject = AssetDatabase.LoadAssetAtPath<SpawnerGraph>(assetPath);
+            string assetPath = UnityEditor.AssetDatabase.GetAssetPath(instanceID);
+            SpawnerGraph scriptableObject = UnityEditor.AssetDatabase.LoadAssetAtPath<SpawnerGraph>(assetPath);
             if (scriptableObject != null)
             {
-                SpawnerToolEditor window = (SpawnerToolEditor)EditorWindow.GetWindow(typeof(SpawnerToolEditor));
+                SpawnerToolEditor window = (SpawnerToolEditor) UnityEditor.EditorWindow.GetWindow(typeof(SpawnerToolEditor));
                 window.ChangeSpawnerGraph(scriptableObject);
                 window.Show();
                 window.titleContent = new GUIContent("Spawner Tool");
                 return true;
             }
+
             return false; //let unity open it.
         }
+#endif
     }
 
     [System.Serializable]
@@ -87,7 +89,7 @@ namespace SpawnerTool
             this.howManyEnemies = 5;
             this.enemyType = "";
             this.timeBetweenSpawn = 1.0f;
-            this.currentTrack = 0;  
+            this.currentTrack = 0;
         }
     }
 }
