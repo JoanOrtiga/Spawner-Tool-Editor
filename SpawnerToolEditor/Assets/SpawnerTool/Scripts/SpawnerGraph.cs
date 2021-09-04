@@ -10,6 +10,34 @@ namespace SpawnerTool
     {
         public List<Round> rounds = new List<Round>();
 
+        public SpawnEnemyData GetSpawnEnemyDataByTime(int round, float time)
+        {
+            foreach (var enemyData in rounds[round].spawningEnemiesData)
+            {
+                if(enemyData.IsAlreadySpawned)
+                    continue;
+                
+                if (enemyData.timeToStartSpawning < time)
+                {
+                    enemyData.IsAlreadySpawned = true;
+                    return enemyData;
+                }
+            }
+
+            return null;
+        }
+
+        public void ResetGraphState()
+        {
+            foreach (var round in rounds)
+            {
+                foreach (var enemyData in round.spawningEnemiesData)
+                {
+                    enemyData.IsAlreadySpawned = false;
+                }
+            }
+        }
+        
 #if UNITY_EDITOR
         [UnityEditor.Callbacks.OnOpenAsset(1)]
         public static bool OnOpenAsset(int instanceID, int line)
@@ -67,6 +95,7 @@ namespace SpawnerTool
         public int howManyEnemies;
         public float timeToStartSpawning;
         public float timeBetweenSpawn;
+        public bool IsAlreadySpawned;
 
         //Tool editor
         public int currentTrack;
@@ -80,6 +109,7 @@ namespace SpawnerTool
             this.enemyType = enemyType;
             this.timeBetweenSpawn = timeBetweenSpawn;
             this.currentTrack = 0;
+            IsAlreadySpawned = false;
         }
 
         public SpawnEnemyData()
@@ -90,6 +120,7 @@ namespace SpawnerTool
             this.enemyType = "";
             this.timeBetweenSpawn = 1.0f;
             this.currentTrack = 0;
+            IsAlreadySpawned = false;
         }
     }
 }

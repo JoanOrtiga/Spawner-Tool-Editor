@@ -10,9 +10,8 @@ namespace SpawnerTool
         private Dictionary<int, Transform> _spawnPoints = new Dictionary<int, Transform>();
 
 #if UNITY_EDITOR
-        [Header("Debug")] 
-        public int FontSize = 30;
-        
+        [Header("Debug")] public int FontSize = 30;
+
         public Color FontColor = Color.magenta;
         public bool ShowAlways;
 #endif
@@ -29,7 +28,20 @@ namespace SpawnerTool
         {
             return _spawnPoints[id].position;
         }
-        
+
+        public bool TryGetSpawnPosition(int id, out Vector3 position)
+        {
+            Transform transform = null;
+            if (_spawnPoints.TryGetValue(id, out transform))
+            {
+                position = transform.position;
+                return true;
+            }
+
+            position = Vector3.zero;
+            return false;
+        }
+
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()

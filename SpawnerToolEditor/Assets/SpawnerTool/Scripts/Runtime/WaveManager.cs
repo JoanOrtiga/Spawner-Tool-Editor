@@ -8,37 +8,67 @@ namespace SpawnerTool
 {
     public class WaveManager : MonoBehaviour
     {
-        [SerializeField, Tooltip("If true, rounds will start counting on awake. Otherwise, you must call StartRound method to start spawning.")] private bool _startTimerOnAwake = true;
+        [Header("Mandatory references")]
+        //
+        [SerializeField, Tooltip("This should have a reference to SpawnPointsIDManager manager.")]
+        private SpawnPointsIDManager _spawnPointsIDManager;
 
-        [Tooltip("Event when rounds finish.")]
-        public UnityEvent OnRoundFinish;
-        
-        [Header("Debug")] 
-        [SerializeField, Tooltip("Disables debug settings.")] 
+        [SerializeField, Tooltip("This should have a reference to a scriptable object of Enemy Factory.")]
+        private EnemyFactory _enemyFactory;
+
+        [Header("Optional parameters")]
+        //
+        [SerializeField, Tooltip("Parent transform for spawned enemies")]
+        private Transform _parentToSpawnEnemies;
+
+        [Space]
+        [Header("Settings")]
+        //
+        [SerializeField]
+        [Tooltip("If true, rounds will start counting on awake. " +
+                 "Otherwise, you must call StartRound method to start spawning.")]
+        private bool _startTimerOnAwake = true;
+
+        [Space]
+        [Header("Events")]
+        //
+        [Tooltip("When current round of the graph has finished.")]
+        public UnityEvent OnRoundFinished;
+
+        [Tooltip("When all rounds of the graph have been spawned.")]
+        public UnityEvent OnAllRoundsFinished;
+
+        [Tooltip("Raised when spawns enemy. It has the GameObject reference")]
+        public UnityEvent<GameObject> OnEnemySpawn;
+
+        [Space]
+        [Header("Debug")]
+        //
+        [SerializeField, Tooltip("Disables debug settings.")]
         private bool _disableDebugSettings;
-        [SerializeField, Tooltip("Starting round in the game.")] 
+
+        [SerializeField, Tooltip("Starting round in the game.")]
         private int _starterRound;
-        
+
         private SpawnerGraph _currentGraph;
-        private RoundTimer _roundTimer;
+        private Timer _roundTimer;
         private int _currentRound = 0;
+
+        private List<EnemySpawner> _enemySpawners = new List<EnemySpawner>();
+
         public bool IsRoundActive { get; private set; } = false;
-        
+
         public SpawnerGraph SpawnerGraph
         {
-            get
-            {
-                return null;
-            }
-            set
-            {
-                _currentGraph = value;
-            }
+            get { return _currentGraph; }
+            set { _currentGraph = value; }
         }
 
         private void Awake()
         {
             InitializeDebugSettings();
+            if (_startTimerOnAwake)
+                StartRound();
         }
 
         private void InitializeDebugSettings()
@@ -51,7 +81,13 @@ namespace SpawnerTool
         /// </summary>
         public void StartRound()
         {
-            _roundTimer = new RoundTimer(_currentGraph.rounds[_currentRound].totalRoundTime);
+            if (_currentGraph.rounds.Count <= _currentRound)
+            {
+                Debug.LogWarning($"SPAWNERTOOL: Round: {_currentRound} not defined in Graph: {_currentGraph.name}.");
+                return;
+            }
+
+            _roundTimer = new Timer(_currentGraph.rounds[_currentRound].totalRoundTime);
             _roundTimer.OnTimerEnd += WhenRoundEnds;
             IsRoundActive = true;
         }
@@ -60,15 +96,72 @@ namespace SpawnerTool
         {
             if (IsRoundActive is false)
                 return;
-            
+
             _roundTimer.Tick(Time.deltaTime);
+
+            UpdateSpawners();
+        }
+
+        private void GetNewEnemies()
+        {
+            SpawnEnemyData sp = _currentGraph.GetSpawnEnemyDataByTime(_currentRound, _roundTimer.GetCountUpTimer());
+            if (sp == null)
+                return;
+
+            _enemySpawners.Add(new EnemySpawner(sp));
+            _enemySpawners[_enemySpawners.Count].OnSpawnEnemy += SpawnEnemy;
+        }
+
+        private void UpdateSpawners()
+        {
+            GetNewEnemies();
+
+            for (int i = _enemySpawners.Count - 1; i >= 0; i--)
+            {
+                _enemySpawners[i].Tick(Time.deltaTime);
+
+                if (_enemySpawners[i].SpawnerFinished())
+                {
+                    _enemySpawners[i].OnSpawnEnemy -= SpawnEnemy;
+                    _enemySpawners.RemoveAt(i);
+                }
+            }
         }
 
         private void WhenRoundEnds()
         {
             IsRoundActive = false;
-            OnRoundFinish?.Invoke();
+            OnRoundFinished?.Invoke();
+
+            _roundTimer.OnTimerEnd -= WhenRoundEnds;
+            _roundTimer = null;
+
+            if (_currentGraph.rounds.Count == _currentRound + 1)
+            {
+                OnAllRoundsFinished?.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// In this function you should implement your own Spawner if you don't like current implementation. 
+        /// </summary>
+        /// <param name="enemyType"></param>
+        private void SpawnEnemy(string enemyType, int spawnPointID)
+        {
+            Vector3 spawnPosition;
+            if (_spawnPointsIDManager.TryGetSpawnPosition(spawnPointID, out spawnPosition))
+            {
+                GameObject enemy = null;
+                enemy = Instantiate(_enemyFactory.GetEnemyPrefab(enemyType), spawnPosition, Quaternion.identity,
+                    _parentToSpawnEnemies);
+                OnEnemySpawn?.Invoke(enemy);
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(
+                    $"SPAWNERTOOL: ID: {spawnPointID} doesn't exists. \n" +
+                    $"Please, add enought childrens to SpawnPointIDManager, or change SpawnPointID for this enemy.");
+            }
         }
     }
 }
-

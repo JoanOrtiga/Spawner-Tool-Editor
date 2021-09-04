@@ -2,16 +2,15 @@
 
 namespace SpawnerTool
 {
-    public class RoundTimer
+    public class Timer
     {
-        private float _duration;
+        private float _timer;
         private float _maxDuration;
-
         public event Action OnTimerEnd;
-        
-        public RoundTimer(float duration)
+
+        public Timer(float duration)
         {
-            _duration = duration;
+            _timer = duration;
             _maxDuration = duration;
         }
 
@@ -21,10 +20,14 @@ namespace SpawnerTool
         /// <param name="deltaTime"></param>
         public void Tick(float deltaTime)
         {
-            _duration -= deltaTime;
+            if (_timer <= 0.0) 
+                return;
+            
+            _timer -= deltaTime;
 
-            if (_duration <= 0.0f)
+            if (_timer <= 0.0f)
             {
+                _timer = 0.0f;
                 WhenTimerEnds();
             }
         }
@@ -35,21 +38,21 @@ namespace SpawnerTool
         }
 
         /// <summary>
-        /// Get current time counting from MaxRoundTime towards 0.
+        /// Get current time counting from Duration towards 0.
         /// </summary>
         /// <returns></returns>
         public float GetCountDownTimer()
         {
-            return _duration;
+            return _timer;
         }
-        
+
         /// <summary>
-        /// Get current time counting from 0 to MaxRoundTime.
+        /// Get current time counting from 0 to Duration.
         /// </summary>
         /// <returns></returns>
         public float GetCountUpTimer()
         {
-            return _maxDuration - _duration;
+            return _maxDuration - _timer;
         }
     }
 }
