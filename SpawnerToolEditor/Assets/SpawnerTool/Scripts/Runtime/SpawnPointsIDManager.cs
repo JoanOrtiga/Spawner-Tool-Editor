@@ -29,6 +29,12 @@ namespace SpawnerTool
             return _spawnPoints[id].position;
         }
 
+        /// <summary>
+        /// Get Position of the ID.
+        /// </summary>
+        /// <param name="id">The ID of the spawner</param>
+        /// <param name="position">Vector3 with the returned position</param>
+        /// <returns>Returns true if ID exists, false if not.</returns>
         public bool TryGetSpawnPosition(int id, out Vector3 position)
         {
             Transform transform = null;

@@ -44,9 +44,13 @@ namespace SpawnerTool
 
         public override void OnInspectorGUI()
         {
-            _enemyFactory.SpawnerToolInspector = EditorGUILayout.ObjectField(new GUIContent("Enemy list"), _enemyFactory.SpawnerToolInspector , typeof(SpawnerToolInspectorData)) as SpawnerToolInspectorData;
-            
-            EditorGUILayout.LabelField("Prefabs: ");
+            _enemyFactory.SpawnerToolInspector = EditorGUILayout.ObjectField(new GUIContent("Enemy list"), _enemyFactory.SpawnerToolInspector , typeof(SpawnerToolInspectorData), true) as SpawnerToolInspectorData;
+
+            EditorGUILayout.Space(10);
+            GUIStyle title = new GUIStyle(GUI.skin.label);
+            title.fontSize = 15;
+           
+            EditorGUILayout.LabelField("Prefabs: ", title);
             if(_enemyFactory.SpawnerToolInspector != null)
             {
                 foreach (var enemyInfo in _enemyFactory.SpawnerToolInspector.enemyInfo)
@@ -54,7 +58,7 @@ namespace SpawnerTool
                     if (_enemyFactory.GetIdToPrefab().ContainsKey(enemyInfo.name))
                     {
                         _enemyFactory.GetIdToPrefab()[enemyInfo.name] = EditorGUILayout.ObjectField(new GUIContent(enemyInfo.name), _enemyFactory.GetIdToPrefab()[enemyInfo.name], typeof(GameObject),true) as GameObject;
-
+                        Repaint();
                     }
                     else
                     {

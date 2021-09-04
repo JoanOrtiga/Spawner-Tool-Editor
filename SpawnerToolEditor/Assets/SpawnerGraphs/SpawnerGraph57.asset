@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc08a09b26a36ca40abd7f89d7d58afc, type: 3}
-  m_Name: RoundsData
+  m_Name: SpawnerGraph57
   m_EditorClassIdentifier: 
   rounds: []

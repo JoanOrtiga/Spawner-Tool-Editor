@@ -9,12 +9,15 @@ namespace SpawnerTool
     public class WaveManager : MonoBehaviour
     {
         [Header("Mandatory references")]
-        //
+        [SerializeField, Tooltip("Spawner Graph, you can load it from this field or via Setter.")]
+        private SpawnerGraph _currentGraph;
+
         [SerializeField, Tooltip("This should have a reference to SpawnPointsIDManager manager.")]
         private SpawnPointsIDManager _spawnPointsIDManager;
 
         [SerializeField, Tooltip("This should have a reference to a scriptable object of Enemy Factory.")]
         private EnemyFactory _enemyFactory;
+
 
         [Header("Optional parameters")]
         //
@@ -24,10 +27,9 @@ namespace SpawnerTool
         [Space]
         [Header("Settings")]
         //
-        [SerializeField]
-        [Tooltip("If true, rounds will start counting on awake. " +
-                 "Otherwise, you must call StartRound method to start spawning.")]
-        private bool _startTimerOnAwake = true;
+        [SerializeField, Tooltip("If true, rounds will start counting on awake. " +
+                                 "Otherwise, you must call StartRound method to start spawning.")]
+        private bool _startSpawningOnAwake = true;
 
         [Space]
         [Header("Events")]
@@ -50,10 +52,9 @@ namespace SpawnerTool
         [SerializeField, Tooltip("Starting round in the game.")]
         private int _starterRound;
 
-        private SpawnerGraph _currentGraph;
+
         private Timer _roundTimer;
         private int _currentRound = 0;
-
         private List<EnemySpawner> _enemySpawners = new List<EnemySpawner>();
 
         public bool IsRoundActive { get; private set; } = false;
@@ -67,7 +68,7 @@ namespace SpawnerTool
         private void Awake()
         {
             InitializeDebugSettings();
-            if (_startTimerOnAwake)
+            if (_startSpawningOnAwake)
                 StartRound();
         }
 
@@ -159,7 +160,7 @@ namespace SpawnerTool
             else
             {
                 throw new ArgumentOutOfRangeException(
-                    $"SPAWNERTOOL: ID: {spawnPointID} doesn't exists. \n" +
+                    $"SPAWNERTOOL: Spawn point ID: {spawnPointID} doesn't exists. \n" +
                     $"Please, add enought childrens to SpawnPointIDManager, or change SpawnPointID for this enemy.");
             }
         }
