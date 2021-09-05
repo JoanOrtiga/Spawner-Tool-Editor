@@ -87,9 +87,7 @@ namespace SpawnerTool
             label.wordWrap = true;
             label.fontSize = Mathf.RoundToInt(SpawnerToolsUtility.Remap(spawnEnemyData.enemyType.Length, 1, 20, 50, 10));
 
-            
-            GUI.DrawTextureWithTexCoords(_rect, texture, new Rect(0,0,5,1));
-            //GUI.DrawTexture(_rect, texture);
+            GUI.DrawTexture(_rect, texture);
             GUI.color = guiColor;
             GUILayout.BeginArea(_rect);
             {
