@@ -51,7 +51,7 @@ namespace SpawnerTool
             }
 
             if (!exists)
-                enemyName = SpawnerToolEditorInspector.unnamed;
+                enemyName = SpawnerToolEditorInspector.Unnamed;
 
             return enemyName;
         }
@@ -73,78 +73,80 @@ namespace SpawnerTool
     [CustomEditor(typeof(SpawnerToolInspectorData))]
     public class SpawnerToolEditorInspector : Editor
     {
-        private SpawnerToolInspectorData sp;
-        int selected = 0;
+        private SpawnerToolInspectorData _sp;
+        int _selected = 0;
 
-        public const string unnamed = "No type";
+        public const string Unnamed = "No type";
 
         private void OnEnable()
         {
-            sp = target as SpawnerToolInspectorData;
+            _sp = target as SpawnerToolInspectorData;
 
-            if (sp == null)
+            if (_sp == null)
                 return;
 
-            ValidateValue(ref sp.spawnEnemyData.howManyEnemies, 1);
-            ValidateValue(ref sp.spawnEnemyData.spawnPointID, 0);
-            ValidateValue(ref sp.spawnEnemyData.timeBetweenSpawn, 0.01f);
-            ValidateValue(ref sp.spawnEnemyData.timeToStartSpawning, 0.0f);
+            ValidateValue(ref _sp.spawnEnemyData.howManyEnemies, 1);
+            ValidateValue(ref _sp.spawnEnemyData.spawnPointID, 0);
+            ValidateValue(ref _sp.spawnEnemyData.timeBetweenSpawn, 0.01f);
+            ValidateValue(ref _sp.spawnEnemyData.timeToStartSpawning, 0.0f);
         }
 
         public override void OnInspectorGUI()
         {
-            if (Event.current.type == EventType.Used || sp.init)
-            {
-                sp.init = false;
-                sp.spawnEnemyData.enemyType = unnamed;
-                ValidateValue(ref sp.spawnEnemyData.howManyEnemies, 1);
-                ValidateValue(ref sp.spawnEnemyData.spawnPointID, 0);
-                ValidateValue(ref sp.spawnEnemyData.timeBetweenSpawn, 0.01f);
-                ValidateValue(ref sp.spawnEnemyData.timeToStartSpawning, 0.0f);
-            }
-
             DrawEnemyData();
             DrawToolSettings();
+            
+            if (Event.current.type == EventType.Used || _sp.init)
+            {
+                if(_sp.init)
+                    _sp.spawnEnemyData.enemyType = Unnamed;
+                _sp.init = false;
+                
+                ValidateValue(ref _sp.spawnEnemyData.howManyEnemies, 1);
+                ValidateValue(ref _sp.spawnEnemyData.spawnPointID, 0);
+                ValidateValue(ref _sp.spawnEnemyData.timeBetweenSpawn, 0.01f);
+                ValidateValue(ref _sp.spawnEnemyData.timeToStartSpawning, 0.0f);
+            }
         }
 
         private void DrawEnemyData()
         {
-            sp.spawnEnemyData.spawnPointID = EditorGUILayout.IntField("Spawn point ID", sp.spawnEnemyData.spawnPointID);
-            sp.spawnEnemyData.howManyEnemies =
-                EditorGUILayout.IntField("How many enemies", sp.spawnEnemyData.howManyEnemies);
+            _sp.spawnEnemyData.spawnPointID = EditorGUILayout.IntField("Spawn point ID", _sp.spawnEnemyData.spawnPointID);
+            _sp.spawnEnemyData.howManyEnemies =
+                EditorGUILayout.IntField("How many enemies", _sp.spawnEnemyData.howManyEnemies);
 
-            sp.spawnEnemyData.timeBetweenSpawn =
-                EditorGUILayout.FloatField("Time between spawns", sp.spawnEnemyData.timeBetweenSpawn);
-            sp.spawnEnemyData.timeToStartSpawning =
-                EditorGUILayout.FloatField("Time to start Spawning", sp.spawnEnemyData.timeToStartSpawning);
+            _sp.spawnEnemyData.timeBetweenSpawn =
+                EditorGUILayout.FloatField("Time between spawns", _sp.spawnEnemyData.timeBetweenSpawn);
+            _sp.spawnEnemyData.timeToStartSpawning =
+                EditorGUILayout.FloatField("Time to start Spawning", _sp.spawnEnemyData.timeToStartSpawning);
 
             List<string> enemyNames = new List<string>();
             enemyNames.Add("Not Defined");
             bool x = false;
-            foreach (var enemy in sp.enemyInfo)
+            foreach (var enemy in _sp.enemyInfo)
             {
                 enemyNames.Add(enemy.name); 
                 
-                if (enemy.name == sp.spawnEnemyData.enemyType)
+                if (enemy.name == _sp.spawnEnemyData.enemyType)
                 {
-                    selected = enemyNames.IndexOf(enemy.name);
+                    _selected = enemyNames.IndexOf(enemy.name);
                     x = true;
                 }
             }
             if (!x)
-                selected = 0;
+                _selected = 0;
 
-            selected = EditorGUILayout.Popup("EnemyType", selected, enemyNames.ToArray());
+            _selected = EditorGUILayout.Popup("EnemyType", _selected, enemyNames.ToArray());
 
-            if (sp.enemyInfo.Count > 0)
+            if (_sp.enemyInfo.Count > 0)
             {
-                if (selected > 0)
+                if (_selected > 0)
                 {
-                    sp.spawnEnemyData.enemyType = enemyNames[selected];
+                    _sp.spawnEnemyData.enemyType = enemyNames[_selected];
                 }
                 else
                 {
-                    sp.spawnEnemyData.enemyType = unnamed;
+                    _sp.spawnEnemyData.enemyType = Unnamed;
                 }
             }
         }
@@ -169,7 +171,7 @@ namespace SpawnerTool
         void CheckEnemyNames()
         {
             bool wrong = false;
-            foreach (EnemyInfo enemyInfo in sp.enemyInfo)
+            foreach (EnemyInfo enemyInfo in _sp.enemyInfo)
             {
                 if (enemyInfo.name == string.Empty)
                     wrong = true;
@@ -182,7 +184,7 @@ namespace SpawnerTool
                 EditorGUILayout.Space(10);
             }
 
-            wrong = sp.enemyInfo.GroupBy(n => n).Any(g => g.Count() > 1);
+            wrong = _sp.enemyInfo.GroupBy(n => n).Any(g => g.Count() > 1);
             if (wrong)
             {
                 EditorGUILayout.HelpBox("There are duplicated names.", MessageType.Error);

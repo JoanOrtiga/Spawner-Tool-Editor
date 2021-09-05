@@ -11,6 +11,7 @@ namespace SpawnerTool
         [Header("Mandatory references")]
         [SerializeField, Tooltip("Spawner Graph, you can load it from this field or via Setter.")]
         private SpawnerGraph _currentGraph;
+    
 
         [SerializeField, Tooltip("This should have a reference to SpawnPointsIDManager manager.")]
         private SpawnPointsIDManager _spawnPointsIDManager;

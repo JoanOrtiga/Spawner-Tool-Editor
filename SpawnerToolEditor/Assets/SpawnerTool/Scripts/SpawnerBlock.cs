@@ -1,20 +1,22 @@
 ﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace SpawnerTool
 {
     public class SpawnerBlock
     {
+        public static Texture2D t_Texture { get; set; }
+        
+        public SpawnEnemyData spawnEnemyData;
+        
         private Rect _rect;
         private Vector2 _size;
         private Color _color;
         private Color _highlightColor;
-        public static Texture2D texture;
-
-        private bool selected;
-
-        public SpawnEnemyData spawnEnemyData;
-
+        
+        private bool _selected;
+        
         public SpawnerBlock(Vector2 position, Vector2 size, SpawnEnemyData sp = null)
         {
             spawnEnemyData = sp is null ? new SpawnEnemyData() : sp;
@@ -61,7 +63,7 @@ namespace SpawnerTool
 
         public void Select(bool select)
         {
-            selected = select;
+            _selected = select;
         }
 
         public bool Contains(Vector2 position)
@@ -76,28 +78,60 @@ namespace SpawnerTool
 
         public void Draw()
         {
-            Color guiColor = GUI.color;
-            GUI.color = selected ? _highlightColor : _color;
+            Color blockColor = _selected ? _highlightColor : _color;
+            Color infoBlockColor = Color.Lerp(blockColor, Color.black, 0.5f);
+            
+            var l = 0.2126f * blockColor.r + 0.7152f * blockColor.g + 0.0722f * blockColor.b;
+            Color enemyTitleColor = l < 0.5 ? Color.white : Color.black;
 
-            GUIStyle label = new GUIStyle("label");
-            Color color = GUI.color;
-            var l = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b;
-            color = l < 0.5 ? Color.white : Color.black;
-            label.normal.textColor = color;
-            label.wordWrap = true;
-            label.fontSize = Mathf.RoundToInt(SpawnerToolsUtility.Remap(spawnEnemyData.enemyType.Length, 1, 20, 50, 10));
-
-            GUI.DrawTexture(_rect, texture);
-            GUI.color = guiColor;
-            GUILayout.BeginArea(_rect);
+            l = 0.2126f * infoBlockColor.r + 0.7152f * infoBlockColor.g + 0.0722f * infoBlockColor.b;
+            Color enemyInfoColor = l < 0.5 ? Color.white : Color.black;
+            
+            GUIStyle enemyTitle = new GUIStyle("label")
             {
-                GUILayout.Label(spawnEnemyData.enemyType, label);
+                normal = {textColor = enemyTitleColor}, fontSize = 20, alignment = TextAnchor.MiddleLeft
+            };
+            GUIStyle enemyInfo = new GUIStyle(enemyTitle)
+            {
+                fontSize = 12, normal = {textColor = enemyInfoColor}
+            };
+
+            Rect infoRect = _rect;
+            infoRect.x += 4;
+            infoRect.y += 25;
+            infoRect.width -= 8;
+            infoRect.height -= 27;
+            
+            Rect titleRect = _rect;
+            titleRect.y += 30;
+            titleRect.height -= 30;
+            titleRect.y -= 30;
+
+            GUI.DrawTexture(_rect, t_Texture, ScaleMode.StretchToFill, true, 0.0f, blockColor, Vector4.zero, new Vector4(5f,5f,13f,13f));
+            GUI.DrawTexture(infoRect, t_Texture, ScaleMode.StretchToFill, true, 0.0f, infoBlockColor, Vector4.zero, new Vector4(5f,5f,15f,15f));
+            
+            GUILayout.BeginArea(titleRect);
+            {
+                GUILayout.Label(spawnEnemyData.enemyType, enemyTitle);
             }
             GUILayout.EndArea();
+            
+            infoRect.x += 3;
+            infoRect.y += 5;
+            infoRect.width -= 3;
+            infoRect.height -= 5;
+
+            if (spawnEnemyData.enemyType != SpawnerToolEditorInspector.Unnamed)
+            {
+                GUILayout.BeginArea(infoRect);
+                {
+                    GUILayout.Label("Quantity: " + spawnEnemyData.howManyEnemies, enemyInfo);
+                    GUILayout.Label("Frequency: " + spawnEnemyData.timeBetweenSpawn + " (s)", enemyInfo);
+                }
+                GUILayout.EndArea();
+            }
         }
         
-
-
         public void SetColor(Color color)
         {
             color.a = 1;

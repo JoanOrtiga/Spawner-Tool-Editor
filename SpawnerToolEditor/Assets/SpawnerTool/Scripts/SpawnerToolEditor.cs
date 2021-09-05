@@ -194,7 +194,7 @@ namespace SpawnerTool
                 Debug.LogError("SPAWNERTOOL: Editor settings not found");
             }
 
-            SpawnerBlock.texture = _editorSettings.whiteTexture;
+            SpawnerBlock.t_Texture = _editorSettings.whiteTexture;
         }
 
         void SelectionChanged()
