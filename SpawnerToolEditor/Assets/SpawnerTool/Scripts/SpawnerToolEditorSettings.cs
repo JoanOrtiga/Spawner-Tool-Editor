@@ -37,23 +37,6 @@ namespace SpawnerTool
                 this.enemyBlockColor = enemyBlockColor;
             }
         }
-
-        public List<EnemyBlockColor> enemyBlockColors = new List<EnemyBlockColor>();
-        
-        public void RandomizeColors()
-        {
-            for (int i = 0; i < enemyBlockColors.Count; i++)
-            {
-                EnemyBlockColor enemyBlockColor = enemyBlockColors[i];
-                enemyBlockColor.enemyBlockColor = new Color(Random.value, Random.value, Random.value);
-                enemyBlockColors[i] = enemyBlockColor;
-            }
-        }
-
-        public void DeleteAllColors()
-        {
-            enemyBlockColors.Clear();
-        }
     }
     
     [CustomEditor(typeof(SpawnerToolEditorSettings))]
@@ -62,16 +45,6 @@ namespace SpawnerTool
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
-            var spawnerTool = (target as SpawnerToolEditorSettings);
-
-            if (GUILayout.Button("Randomize All Colors"))
-            {
-                spawnerTool.RandomizeColors();
-            }
-            if (GUILayout.Button("Clear all colors & enemies"))
-            {
-                spawnerTool.DeleteAllColors();
-            }
         }
     }
 }

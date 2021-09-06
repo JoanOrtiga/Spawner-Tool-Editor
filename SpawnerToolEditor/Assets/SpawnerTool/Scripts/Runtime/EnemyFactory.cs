@@ -8,10 +8,10 @@ namespace SpawnerTool
     [CreateAssetMenu(fileName = "Enemy Prefabs", menuName = "SpawnerTool/EnemyPrefabs", order = -10)]
     public class EnemyFactory : ScriptableObject
     {
-        [SerializeField] private List<GameObject> enemyPrefabs = new List<GameObject>();
+        [SerializeField] private List<GameObject> _enemyPrefabs = new List<GameObject>();
         private Dictionary<string, GameObject> _idToPrefab = new Dictionary<string, GameObject>();
 
-        public SpawnerToolInspectorData SpawnerToolInspector { get; set; }
+        public ProjectSettings ProjectSettings { get; set; }
         public Dictionary<string, GameObject> GetIdToPrefab()
         {
             return _idToPrefab;
@@ -44,25 +44,25 @@ namespace SpawnerTool
 
         public override void OnInspectorGUI()
         {
-            _enemyFactory.SpawnerToolInspector = EditorGUILayout.ObjectField(new GUIContent("Enemy list"), _enemyFactory.SpawnerToolInspector , typeof(SpawnerToolInspectorData), true) as SpawnerToolInspectorData;
+            _enemyFactory.ProjectSettings = EditorGUILayout.ObjectField(new GUIContent("Enemy list"), _enemyFactory.ProjectSettings , typeof(ProjectSettings), true) as ProjectSettings;
 
             EditorGUILayout.Space(10);
             GUIStyle title = new GUIStyle(GUI.skin.label);
             title.fontSize = 15;
            
             EditorGUILayout.LabelField("Prefabs: ", title);
-            if(_enemyFactory.SpawnerToolInspector != null)
+            if(_enemyFactory.ProjectSettings != null)
             {
-                foreach (var enemyInfo in _enemyFactory.SpawnerToolInspector.enemyInfo)
+                foreach (var enemyInfo in _enemyFactory.ProjectSettings.GetEnemyNames())
                 {
-                    if (_enemyFactory.GetIdToPrefab().ContainsKey(enemyInfo.name))
+                    if (_enemyFactory.GetIdToPrefab().ContainsKey(enemyInfo))
                     {
-                        _enemyFactory.GetIdToPrefab()[enemyInfo.name] = EditorGUILayout.ObjectField(new GUIContent(enemyInfo.name), _enemyFactory.GetIdToPrefab()[enemyInfo.name], typeof(GameObject),true) as GameObject;
+                        _enemyFactory.GetIdToPrefab()[enemyInfo] = EditorGUILayout.ObjectField(new GUIContent(enemyInfo), _enemyFactory.GetIdToPrefab()[enemyInfo], typeof(GameObject),true) as GameObject;
                         Repaint();
                     }
                     else
                     {
-                        _enemyFactory.GetIdToPrefab().Add(enemyInfo.name, null);
+                        _enemyFactory.GetIdToPrefab().Add(enemyInfo, null);
                     }
                 } 
             }

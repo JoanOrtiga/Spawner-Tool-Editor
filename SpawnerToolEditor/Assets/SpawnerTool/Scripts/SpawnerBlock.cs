@@ -139,11 +139,6 @@ namespace SpawnerTool
             _color = color;
         }
 
-        public Color GetColor()
-        {
-            return _color;
-        }
-
         public Rect GetRect()
         {
             return _rect;
