@@ -6,7 +6,7 @@ namespace SpawnerTool
 {
     public class SpawnerBlock
     {
-        public static Texture2D t_Texture { get; set; }
+        public static Texture2D Texture { get; set; }
         
         public SpawnEnemyData spawnEnemyData;
         
@@ -107,8 +107,8 @@ namespace SpawnerTool
             titleRect.height -= 30;
             titleRect.y -= 30;
 
-            GUI.DrawTexture(_rect, t_Texture, ScaleMode.StretchToFill, true, 0.0f, blockColor, Vector4.zero, new Vector4(5f,5f,13f,13f));
-            GUI.DrawTexture(infoRect, t_Texture, ScaleMode.StretchToFill, true, 0.0f, infoBlockColor, Vector4.zero, new Vector4(5f,5f,15f,15f));
+            GUI.DrawTexture(_rect, Texture, ScaleMode.StretchToFill, true, 0.0f, blockColor, Vector4.zero, new Vector4(5f,5f,13f,13f));
+            GUI.DrawTexture(infoRect, Texture, ScaleMode.StretchToFill, true, 0.0f, infoBlockColor, Vector4.zero, new Vector4(5f,5f,15f,15f));
             
             GUILayout.BeginArea(titleRect);
             {
@@ -126,7 +126,8 @@ namespace SpawnerTool
                 GUILayout.BeginArea(infoRect);
                 {
                     GUILayout.Label("Quantity: " + spawnEnemyData.howManyEnemies, enemyInfo);
-                    GUILayout.Label("Frequency: " + spawnEnemyData.timeBetweenSpawn + " (s)", enemyInfo);
+                    GUILayout.Label("Frequency: " + spawnEnemyData.timeBetweenSpawn + "s", enemyInfo);
+                    GUILayout.Label("SpawnID: " + spawnEnemyData.spawnPointID, enemyInfo);
                 }
                 GUILayout.EndArea();
             }
@@ -157,6 +158,11 @@ namespace SpawnerTool
             _size.y = 100f;
 
             _rect.size = _size;
+        }
+
+        public void ProcessInput()
+        {
+            
         }
     }
 }
