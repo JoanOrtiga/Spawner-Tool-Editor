@@ -93,6 +93,24 @@ namespace SpawnerTool
                 InspectorDataLoad();
         }
 
+        public static void ShowWindow(SpawnerGraph spawnerGraph)
+        {
+            EditorWindow.CreateWindow<SpawnerToolEditor>("SpawnerTool");
+            _window = EditorWindow.GetWindow(typeof(SpawnerToolEditor), false, "SpawnerTool", focusedWindow.hasFocus) as
+                SpawnerToolEditor;
+            
+            _window.minSize = new Vector2(500 + MarginToPlayField.x + ScrollBarPixelSize,
+                500 + MarginToPlayField.y + ScrollBarPixelSize - UnityWindowPixelsBug);
+            _window.wantsMouseEnterLeaveWindow = true;
+            _window.wantsMouseMove = true;
+            if (_editorSettings == null)
+                EditorSettingsLoad();
+            if (_inspectorData == null)
+                InspectorDataLoad();
+            
+            _window.ChangeSpawnerGraph(spawnerGraph);
+        }
+
         private void OnEnable()
         {
             if (_editorSettings == null)
