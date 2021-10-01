@@ -8,11 +8,16 @@ namespace SpawnerTool
     [CreateAssetMenu(fileName = "RoundsData", menuName = "SpawnerTool/SpawnerGraph", order = -5)]
     public class SpawnerGraph : ScriptableObject
     {
-        public List<Round> rounds = new List<Round>();
+        [SerializeField] private List<Round> _rounds = new List<Round>();
+
+        public List<Round> GetAllRounds()
+        {
+            return _rounds;
+        }
 
         public SpawnEnemyData GetSpawnEnemyDataByTime(int round, float time)
         {
-            foreach (var enemyData in rounds[round].spawningEnemiesData)
+            foreach (var enemyData in _rounds[round].spawningEnemiesData)
             {
                 if(enemyData.IsAlreadySpawned)
                     continue;
@@ -29,7 +34,7 @@ namespace SpawnerTool
 
         public void ResetGraphState()
         {
-            foreach (var round in rounds)
+            foreach (var round in _rounds)
             {
                 foreach (var enemyData in round.spawningEnemiesData)
                 {
@@ -38,7 +43,8 @@ namespace SpawnerTool
             }
         }
         
-#if UNITY_EDITOR
+        /*
+         * #if UNITY_EDITOR
         [UnityEditor.Callbacks.OnOpenAsset(1)]
         public static bool OnOpenAsset(int instanceID, int line)
         {
@@ -46,12 +52,13 @@ namespace SpawnerTool
             SpawnerGraph scriptableObject = UnityEditor.AssetDatabase.LoadAssetAtPath<SpawnerGraph>(assetPath);
             if (scriptableObject != null)
             {
-                SpawnerToolEditor.ShowWindow(scriptableObject);
+                SpawnerTool.Editor.SpawnerToolEditor.ShowWindow(scriptableObject);
                 return true;
             }
 
             return false; //let unity open it.
         }
-#endif
+        #endif
+         */
     }
 }

@@ -83,13 +83,13 @@ namespace SpawnerTool
         /// </summary>
         public void StartRound()
         {
-            if (_currentGraph.rounds.Count <= _currentRound)
+            if (_currentGraph.GetAllRounds().Count <= _currentRound)
             {
                 Debug.LogWarning($"SPAWNERTOOL: Round: {_currentRound} not defined in Graph: {_currentGraph.name}.");
                 return;
             }
 
-            _roundTimer = new Timer(_currentGraph.rounds[_currentRound].totalRoundTime);
+            _roundTimer = new Timer(_currentGraph.GetAllRounds()[_currentRound].totalRoundTime);
             _roundTimer.OnTimerEnd += WhenRoundEnds;
             IsRoundActive = true;
         }
@@ -138,7 +138,7 @@ namespace SpawnerTool
             _roundTimer.OnTimerEnd -= WhenRoundEnds;
             _roundTimer = null;
 
-            if (_currentGraph.rounds.Count == _currentRound + 1)
+            if (_currentGraph.GetAllRounds().Count == _currentRound + 1)
             {
                 OnAllRoundsFinished?.Invoke();
             }

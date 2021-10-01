@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 namespace SpawnerTool
@@ -11,7 +10,6 @@ namespace SpawnerTool
         [SerializeField] private List<GameObject> enemyPrefabs = new List<GameObject>();
         private Dictionary<string, GameObject> _idToPrefab = new Dictionary<string, GameObject>();
 
-        public ProjectSettings ProjectSettings { get; set; }
         public Dictionary<string, GameObject> GetIdToPrefab()
         {
             return _idToPrefab;
@@ -29,45 +27,6 @@ namespace SpawnerTool
                 throw new ArgumentOutOfRangeException("SPAWNERTOOL: This enemy type doesn't exists");
 
             return prefab;
-        }
-    }
-
-    [CustomEditor(typeof(EnemyFactory))]
-    public class EnemyFactorCustomInspector : Editor
-    {
-        private EnemyFactory _enemyFactory;
-
-        private void OnEnable()
-        {
-            _enemyFactory = target as EnemyFactory;
-        }
-
-        public override void OnInspectorGUI()
-        {
-            _enemyFactory.ProjectSettings = EditorGUILayout.ObjectField(new GUIContent("Project Settings"), _enemyFactory.ProjectSettings , typeof(ProjectSettings), true) as ProjectSettings;
-
-            EditorGUILayout.Space(10);
-            GUIStyle title = new GUIStyle(GUI.skin.label);
-            title.fontSize = 15;
-           
-            EditorGUILayout.LabelField("Prefabs: ", title);
-            if(_enemyFactory.ProjectSettings != null)
-            {
-                foreach (var enemyName in _enemyFactory.ProjectSettings.GetEnemyNames())
-                {
-                    if (_enemyFactory.GetIdToPrefab().ContainsKey(enemyName))
-                    {
-                        _enemyFactory.GetIdToPrefab()[enemyName] = EditorGUILayout.ObjectField(new GUIContent(enemyName), _enemyFactory.GetIdToPrefab()[enemyName], typeof(GameObject),true) as GameObject;
-                        Repaint();
-                    }
-                    else
-                    {
-                        _enemyFactory.GetIdToPrefab().Add(enemyName, null);
-                    }
-                } 
-            }
-            
-            serializedObject.Update();
         }
     }
 }
