@@ -10,7 +10,7 @@ namespace SpawnerTool
     {
         [SerializeField] private List<string> enemyNames = new List<string>();
 
-        private Dictionary<string, Color> enemyInfo = new Dictionary<string, Color>();
+        private Dictionary<string, Color> enemyColors = new Dictionary<string, Color>();
 
         public Color GetEnemyColor(string enemyType)
         {
@@ -24,8 +24,18 @@ namespace SpawnerTool
 
         public Dictionary<string, Color> GetAllColors()
         {
-            return enemyInfo;
+            return enemyColors;
+        }
+
+        public void SetEnemyColor(string enemyType, Color color)
+        {
+            if (enemyColors.ContainsKey(enemyType))
+            {
+                enemyColors[enemyType] = color;
+                return;
+            }
+            
+            Debug.LogError($"SPAWNERTOOL: {enemyType} does not exists in this ProjectSettings.asset ({this.name}).");
         }
     }
 }
-

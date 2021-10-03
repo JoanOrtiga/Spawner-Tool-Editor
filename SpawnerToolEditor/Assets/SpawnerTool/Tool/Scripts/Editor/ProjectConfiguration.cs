@@ -1,17 +1,31 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace SpawnerTool
 {
     [CreateAssetMenu(fileName = "ProjectConfiguration", menuName = "SpawnerTool/Settings/ProjectConfiguration")]
-    public class ProjectConfiguration : ScriptableSingleton<ProjectConfiguration>
+    public class ProjectConfiguration : ScriptableObject
     {
         [SerializeField] private ProjectSettings _projectSettings;
         [SerializeField] private SpawnerToolEditorSettings _spawnerToolEditorSettings;
         [SerializeField] private EnemyFactory _enemyFactory;
 
         private SpawnerToolInspectorData _spawnerToolInspectorData;
-        
+
+        public static ProjectConfiguration Instance { get; set; }
+
+        private void OnEnable()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+                return;
+            }
+            
+            Debug.Log("ProjectConfiguration.asset already exists");
+        }
+
         public ProjectSettings GetProjectSettings()
         {
             //This is a quaternion.

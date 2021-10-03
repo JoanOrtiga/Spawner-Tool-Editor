@@ -6,8 +6,10 @@ using System.Text.RegularExpressions;
 
 namespace SpawnerTool
 {
-    public class SpawnerToolEditor : EditorWindow
+    /*
+    public class SpawnerToolEditorCopy : EditorWindow
     {
+        
         #region Variables
 
         public SpawnerGraph currentGraph;
@@ -110,6 +112,12 @@ namespace SpawnerTool
 
         public static void ShowWindow(SpawnerGraph spawnerGraph)
         {
+            if (CheckIfWindowAlreadyExists())
+            {
+                _window.ChangeSpawnerGraph(spawnerGraph);
+                return;
+            }
+            
             EditorWindow.CreateWindow<SpawnerToolEditor>("SpawnerTool");
             _window = EditorWindow.GetWindow(typeof(SpawnerToolEditor), false, "SpawnerTool", focusedWindow.hasFocus) as
                 SpawnerToolEditor;
@@ -178,7 +186,7 @@ namespace SpawnerTool
 
         private static void InspectorDataLoad()
         {
-            _inspectorData = ProjectConfiguration.instance.GetSpawnerToolInspectorData();
+            _inspectorData = ProjectConfiguration.Instance.GetSpawnerToolInspectorData();
 
             _spawnerInspector = CreateInstance<SpawnerToolInspectorData>();
             LoadInspectorData();
@@ -187,7 +195,7 @@ namespace SpawnerTool
 
         private static void EditorSettingsLoad()
         {
-            _editorSettings = ProjectConfiguration.instance.GetSpawnerToolEditorSettings();
+            _editorSettings = ProjectConfiguration.Instance.GetSpawnerToolEditorSettings();
             SpawnerBlock.Texture = _editorSettings.whiteTexture;
         }
 
@@ -281,7 +289,7 @@ namespace SpawnerTool
             foreach (var block in _blocks)
             {
                 block.spawnEnemyData.enemyType = _spawnerInspector.CheckEnemyName(block.spawnEnemyData.enemyType);
-                block.SetColor(_spawnerInspector.GetEnemyColor(block.spawnEnemyData.enemyType));
+                block.SetColor(ProjectConfiguration.Instance.GetProjectSettings().GetEnemyColor(block.spawnEnemyData.enemyType));
             }
 
             Repaint();
@@ -345,10 +353,10 @@ namespace SpawnerTool
 
             string enemyType = _selectedSpawnerBlock.spawnEnemyData.enemyType;
 
-            _color = EditorGUI.ColorField(_rectColorPicker, new GUIContent(""), _spawnerInspector.GetEnemyColor(enemyType),
+            _color = EditorGUI.ColorField(_rectColorPicker, new GUIContent(""), ProjectConfiguration.Instance.GetProjectSettings().GetEnemyColor(enemyType),
                 true, false, false);
 
-            _spawnerInspector.SetEnemyColor(enemyType, _color);
+            ProjectConfiguration.Instance.GetProjectSettings().SetEnemyColor(enemyType, _color);
 
             UpdateBlockColors();
         }
@@ -576,12 +584,7 @@ namespace SpawnerTool
                         {
                             _round = "0";
                         }
-                        
-                        if (_round != lastRound)
-                        {
-                            Save(int.Parse(lastRound));
-                            Load(int.Parse(_round));
-                        }
+
                     }
                     else
                     {
@@ -596,12 +599,6 @@ namespace SpawnerTool
                         if (int.Parse(_round) > _editorSettings.maxRounds)
                         {
                             _round = _editorSettings.maxRounds.ToString();
-                        }
-                        
-                        if (_round != lastRound)
-                        {
-                            Save(int.Parse(lastRound));
-                            Load(int.Parse(_round));
                         }
                     }
 
@@ -845,7 +842,7 @@ namespace SpawnerTool
         {
             foreach (var block in _blocks)
             {
-                block.SetColor(_spawnerInspector.GetEnemyColor(block.spawnEnemyData.enemyType));
+                block.SetColor(ProjectConfiguration.Instance.GetProjectSettings().GetEnemyColor(block.spawnEnemyData.enemyType));
             }
         }
 
@@ -912,9 +909,6 @@ namespace SpawnerTool
             EditorUtility.SetDirty(currentGraph); 
             
             currentGraph.GetAllRounds()[round] = savedRound;
-            
-            AssetDatabase.SaveAssetIfDirty(currentGraph);
-            AssetDatabase.Refresh();
         }
 
         #endregion
@@ -933,7 +927,7 @@ namespace SpawnerTool
         {
             if (_selectedSpawnerBlock.spawnEnemyData.enemyType != _spawnerInspector.spawnEnemyData.enemyType)
             {
-                _selectedSpawnerBlock.SetColor(_spawnerInspector.GetEnemyColor(_spawnerInspector.spawnEnemyData.enemyType));
+                _selectedSpawnerBlock.SetColor(ProjectConfiguration.Instance.GetProjectSettings().GetEnemyColor(_spawnerInspector.spawnEnemyData.enemyType));
             }
 
             _selectedSpawnerBlock.spawnEnemyData = _spawnerInspector.spawnEnemyData;
@@ -941,18 +935,20 @@ namespace SpawnerTool
 
         static void SaveInspectorData()
         {
-            _inspectorData.init = _spawnerInspector.init;
-            _inspectorData.enemyInfo = _spawnerInspector.enemyInfo;
+           // _inspectorData.init = _spawnerInspector.init;
+           // _inspectorData.enemyInfo = _spawnerInspector.enemyInfo;
             _inspectorData.spawnEnemyData = _spawnerInspector.spawnEnemyData;
         }
 
         static void LoadInspectorData()
         {
-            _spawnerInspector.init = _inspectorData.init;
-            _spawnerInspector.enemyInfo = _inspectorData.enemyInfo;
+          //  _spawnerInspector.init = _inspectorData.init;
+           // _spawnerInspector.enemyInfo = _inspectorData.enemyInfo;
             _spawnerInspector.spawnEnemyData = _inspectorData.spawnEnemyData;
         }
 
         #endregion
+    
     }
+    */
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace SpawnerTool
@@ -9,7 +8,7 @@ namespace SpawnerTool
     {
         public SpawnEnemyData spawnEnemyData = new SpawnEnemyData();
         public bool init = false;
-        public List<EnemyInfo> enemyInfo = new List<EnemyInfo>();
+      /*  public List<EnemyInfo> enemyInfo = new List<EnemyInfo>();
 
         public Color GetEnemyColor(string enemyName)
         {
@@ -36,13 +35,13 @@ namespace SpawnerTool
                 }
             }
         }
-
+*/
         public string CheckEnemyName(string enemyName)
         {
             bool exists = false;
-            foreach (var enemy in enemyInfo)
+            foreach (var enemy in ProjectConfiguration.Instance.GetProjectSettings().GetEnemyNames())
             {
-                if (enemyName == enemy.name)
+                if (enemyName == enemy)
                 {
                     exists = true;
                 }              
@@ -52,19 +51,6 @@ namespace SpawnerTool
                 enemyName = SpawnerToolInspectorDataEditor.Unnamed;
 
             return enemyName;
-        }
-    }
-
-    [Serializable]
-    public struct EnemyInfo
-    {
-        public string name;
-        public Color blockColor;
-
-        public EnemyInfo(string name, Color color)
-        {
-            this.name = name;
-            this.blockColor = color;
         }
     }
 }

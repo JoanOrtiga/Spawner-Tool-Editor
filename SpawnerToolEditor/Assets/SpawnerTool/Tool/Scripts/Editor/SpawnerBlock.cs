@@ -42,14 +42,14 @@ namespace SpawnerTool
         {
             spawnEnemyData.currentTrack = track;
             spawnEnemyData.timeToStartSpawning =
-                time / (SpawnerToolEditor.CellSize * SpawnerToolEditor.CellPixelSize.x);
+                time / (SpawnerToolEditor.CellXPercentatge * SpawnerToolEditor.CellSize.x);
             _rect = new Rect(mouseDrag.x, mouseDrag.y, _size.x, _size.y);
         }
 
         public void UpdateTime(float time)
         {
             spawnEnemyData.timeToStartSpawning = time;
-            _rect.x = time * (SpawnerToolEditor.CellSize * SpawnerToolEditor.CellPixelSize.x);
+            _rect.x = time * (SpawnerToolEditor.CellXPercentatge * SpawnerToolEditor.CellSize.x);
         }
 
         public void ChangeSize(Vector2 size)
@@ -148,7 +148,7 @@ namespace SpawnerTool
 
         public void UpdateSize()
         {
-            _size.x = SpawnerToolEditor.CellPixelSize.x * SpawnerToolEditor.CellSize *
+            _size.x = SpawnerToolEditor.CellSize.x * SpawnerToolEditor.CellXPercentatge *
                       (spawnEnemyData.howManyEnemies * spawnEnemyData.timeBetweenSpawn);
             _size.x = Mathf.Max(_size.x, 20.0f);
 

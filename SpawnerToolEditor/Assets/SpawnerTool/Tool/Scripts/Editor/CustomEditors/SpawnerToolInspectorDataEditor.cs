@@ -60,7 +60,7 @@ namespace SpawnerTool
             List<string> enemyNames = new List<string>();
             enemyNames.Add("Not Defined");
             bool x = false;
-            foreach (var enemy in _sp.enemyInfo)
+            /*foreach (var enemy in _sp.enemyInfo)
             {
                 enemyNames.Add(enemy.name); 
                 
@@ -69,14 +69,24 @@ namespace SpawnerTool
                     _selected = enemyNames.IndexOf(enemy.name);
                     x = true;
                 }
+            }*/
+            foreach (var enemyName in ProjectConfiguration.Instance.GetProjectSettings().GetEnemyNames())
+            {
+                enemyNames.Add(enemyName);
+
+                if (enemyName == _sp.spawnEnemyData.enemyType)
+                {
+                    _selected = enemyNames.IndexOf(enemyName);
+                    x = true;
+                }
             }
+            
             if (!x)
                 _selected = 0;
 
             _selected = EditorGUILayout.Popup("EnemyType", _selected, enemyNames.ToArray());
 
-            if (_sp.enemyInfo.Count > 0)
-            {
+
                 if (_selected > 0)
                 {
                     _sp.spawnEnemyData.enemyType = enemyNames[_selected];
@@ -85,7 +95,7 @@ namespace SpawnerTool
                 {
                     _sp.spawnEnemyData.enemyType = Unnamed;
                 }
-            }
+            
         }
 
         private void DrawToolSettings()
@@ -98,9 +108,9 @@ namespace SpawnerTool
                 GUILayout.Height(20));
             EditorGUILayout.Space();
 
-            SerializedObject projectSettingsSerialized = new SerializedObject(ProjectConfiguration.instance.GetProjectSettings());
+            SerializedObject projectSettingsSerialized = new SerializedObject(ProjectConfiguration.Instance.GetProjectSettings());
             SpawnerToolEditorUtility.ListToGUI(this, projectSettingsSerialized.FindProperty("enemyNames"), 
-                ProjectConfiguration.instance.GetProjectSettings().GetAllColors(),"Enemy Blocks Color", 
+                ProjectConfiguration.Instance.GetProjectSettings().GetAllColors(),"Enemy Blocks Color", 
                 ref _visible);
             
             serializedObject.Update();
