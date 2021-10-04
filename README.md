@@ -6,6 +6,7 @@ STILL IN DEVELOPMENT. IT WILL BE READY SOON.
 
 ETA: 14/10/2021
 
+
 Current features:
 - Resizable and responsive editor window where you can drag and drop, copy, paste, and change settings fastly.
 - Customizable spawnpoint system
