@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88fe1dee91971014aaeaba60ebb786e0, type: 3}
   m_Name: SpawnerGraph4
   m_EditorClassIdentifier: 
-  _rounds: []
+  _rounds:
+  - spawningEnemiesData: []
+    totalRoundTime: 25
+    totalTracks: 5

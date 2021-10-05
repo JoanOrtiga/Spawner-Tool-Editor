@@ -22,7 +22,7 @@ namespace SpawnerTool
                 SpawnerGraph scriptableObject = UnityEditor.AssetDatabase.LoadAssetAtPath<SpawnerGraph>(assetPath);
                 if (scriptableObject != null)
                 {
-                    SpawnerToolEditor.ShowWindow(scriptableObject);
+                  //  SpawnerToolEditorTest2.ShowWindow(scriptableObject);
                 }
             }
             
@@ -39,7 +39,7 @@ namespace SpawnerTool
             SpawnerGraph scriptableObject = UnityEditor.AssetDatabase.LoadAssetAtPath<SpawnerGraph>(assetPath);
             if (scriptableObject != null)
             {
-                SpawnerToolEditor.ShowWindow(scriptableObject);
+               // SpawnerToolEditorTest2.ShowWindow(scriptableObject);
                 return true;
             }
 

@@ -10,9 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88fe1dee91971014aaeaba60ebb786e0, type: 3}
-  m_Name: SpawnerGraph3
+  m_Name: SpawnerGraph6
   m_EditorClassIdentifier: 
-  _rounds:
-  - spawningEnemiesData: []
-    totalRoundTime: 25
-    totalTracks: 5
+  _rounds: []
