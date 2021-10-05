@@ -42,23 +42,5 @@ namespace SpawnerTool
                 }
             }
         }
-        
-        /*
-         * #if UNITY_EDITOR
-        [UnityEditor.Callbacks.OnOpenAsset(1)]
-        public static bool OnOpenAsset(int instanceID, int line)
-        {
-            string assetPath = UnityEditor.AssetDatabase.GetAssetPath(instanceID);
-            SpawnerGraph scriptableObject = UnityEditor.AssetDatabase.LoadAssetAtPath<SpawnerGraph>(assetPath);
-            if (scriptableObject != null)
-            {
-                SpawnerTool.Editor.SpawnerToolEditor.ShowWindow(scriptableObject);
-                return true;
-            }
-
-            return false; //let unity open it.
-        }
-        #endif
-         */
     }
 }

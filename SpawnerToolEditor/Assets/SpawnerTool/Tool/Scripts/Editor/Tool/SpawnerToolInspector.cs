@@ -1,12 +1,14 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace SpawnerTool
 {
+    [Serializable]
     public class SpawnerToolInspector
     {
-        private SpawnerToolInspectorData _inspectorData;
-        private SpawnerToolInspectorData _inspectorWindow;
+        [SerializeField] private SpawnerToolInspectorData _inspectorData;
+        [SerializeField] private SpawnerToolInspectorData _inspectorWindow;
         
         public SpawnerToolInspector()
         {

@@ -4,17 +4,18 @@ using UnityEngine;
 
 namespace SpawnerTool
 {
+    [Serializable]
     public class SpawnerBlock
     {
         public static Texture2D Texture { get; set; }
         
         public SpawnEnemyData spawnEnemyData;
         
-        private Rect _rect;
-        private Vector2 _size;
-        private Color _color;
+        [SerializeField] private Rect _rect;
+        [SerializeField] private Vector2 _size;
+        [SerializeField] private Color _color;
         
-        private bool _selected;
+        [SerializeField] private bool _selected;
         
         public SpawnerBlock(Vector2 position, Vector2 size, SpawnEnemyData sp = null)
         {

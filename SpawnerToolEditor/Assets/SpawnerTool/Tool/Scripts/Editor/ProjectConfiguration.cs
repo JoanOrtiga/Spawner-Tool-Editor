@@ -13,7 +13,6 @@ namespace SpawnerTool
         [SerializeField] private EnemyFactory _enemyFactory;
 
         private SpawnerToolInspectorData _spawnerToolInspectorData;
-        private SpawnerToolEditorData _spawnerToolEditorData;
 
         private static ProjectConfiguration _instance;
 
@@ -102,54 +101,6 @@ namespace SpawnerTool
             }
 
             return _spawnerToolInspectorData;
-        }
-
-        public void SaveSpawnerToolEditorData(SpawnerToolEditor spawnerToolEditor)
-        {
-            if (_spawnerToolEditorData == null)
-            {
-                FindSpawnerToolEditorData();
-            }
-            
-            _spawnerToolEditorData.SaveSpawnerToolEditorState(spawnerToolEditor);
-        }
-        
-        public void LoadSpawnerToolEditorData(SpawnerToolEditor spawnerToolEditor)
-        {
-            if (_spawnerToolEditorData == null)
-            {
-                FindSpawnerToolEditorData();
-            }
-            
-            _spawnerToolEditorData.LoadSpawnerToolEditorState(spawnerToolEditor);
-        }
-
-        public void FindSpawnerToolEditorData()
-        {
-            //TODO
-            string[] guids = AssetDatabase.FindAssets("t:" + typeof(SpawnerToolEditorData));
-            if (guids.Length == 0)
-            {
-                Debug.LogError(
-                    "SPAWNERTOOL: No spawner inspector data found. Make sure original 'SpawnerInspectorData.asset' is in the project.");
-                return;
-            }
-
-            if (guids.Length > 1)
-            {
-                Debug.LogWarning(
-                    "SPAWNERTOOL: More than one spawner inspector data found. That may cause problems. Make sure only original 'SpawnerInspectorData.asset' is in the project.");
-            }
-
-            string path = AssetDatabase.GUIDToAssetPath(guids[0]);
-            _spawnerToolEditorData =
-                AssetDatabase.LoadAssetAtPath(path, typeof(SpawnerToolEditorData)) as SpawnerToolEditorData;
-
-            if (_spawnerToolEditorData == null)
-            {
-                Debug.LogError("SPAWNERTOOL: SpawnerInspectorData not found");
-                return;
-            }
         }
     }
 }

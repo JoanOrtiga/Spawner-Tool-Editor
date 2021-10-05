@@ -4,48 +4,67 @@ using UnityEngine;
 namespace SpawnerTool
 {
     [Serializable]
-    public class Playground : ToolEditorComponent
-    {/*
-        public SpawnerToolEditorTest2 SpawnerToolEditorTest2 { get; set; }
+    public class Playground
+    {
+        public static Vector2 PlaygroundSize { get; } = new Vector2(500, 500);
+        public static Vector2 MarginToPlaygroundSize { get; } = new Vector2(57, 58);
 
-        private Vector2 _scrollPosition;
+        [SerializeField] private SpawnerToolEditor _spawnerToolEditor;
+        [SerializeField] private Vector2 _scrollPosition;
 
-        public float Rows { get; set; } = 5f;
-        public float Columns { get; set; } = 5f;
-        public float Width { get; set; } = 500;
-        public float Height { get; set; } = 500;
-        
-        public Playground(SpawnerToolEditorTest2 spawnerToolEditorTest2)
+        [SerializeField] private float _rows = 5f;
+        public float Rows
         {
-            SpawnerToolEditorTest2 = spawnerToolEditorTest2;
+            get => _rows;
+            set => _rows = value;
+        }
+        [SerializeField] private float _columns = 5f;
+        public float Columns
+        {
+            get => _columns;
+            set => _columns = value;
         }
 
+        [SerializeField] private float _width = 500;
+        [SerializeField] private float _height = 500;
+        
+        public Playground(SpawnerToolEditor spawnerToolEditor)
+        {
+            _spawnerToolEditor = spawnerToolEditor;
+        }
+
+        public void Update()
+        {
+            _width = PlaygroundSize.x * SpawnerToolEditor.CellXPercentatge * _columns;
+            _height = PlaygroundSize.y * SpawnerToolEditor.CellXPercentatge * _rows;
+        }
+        
         public void Draw()
         {
-            SpawnerToolEditorTest2 sp = SpawnerToolEditorTest2;
+            SpawnerToolEditor sp = _spawnerToolEditor;
             
-            Rect rectScrollView = new Rect(SpawnerToolEditorTest2.MarginToPlaygroundSize.x, SpawnerToolEditorTest2.MarginToPlaygroundSize.y,
-                sp.WindowSize.x - SpawnerToolEditorTest2.MarginToPlaygroundSize.x,
-                sp.WindowSize.y - SpawnerToolEditorTest2.MarginToPlaygroundSize.y);
+            Rect rectScrollView = new Rect(MarginToPlaygroundSize.x, MarginToPlaygroundSize.y,
+                sp.WindowSize.x - MarginToPlaygroundSize.x,
+                sp.WindowSize.y - MarginToPlaygroundSize.y);
 
             Vector2 _scrollSave = _scrollPosition;
 
             _scrollPosition = GUI.BeginScrollView(rectScrollView, _scrollPosition, 
-                new Rect(0, 0, Width, Height));
+                new Rect(0, 0, _width, _height));
             {
-                Rect rectPlaygroundFill = new Rect(0, 0, Width, Height);
+                Rect rectPlaygroundFill = new Rect(0, 0, _width, _height);
 
-                GUI.DrawTextureWithTexCoords(rectPlaygroundFill, SpawnerToolEditorTest2.EditorSettings.backgroundTexture,
-                    new Rect(1f, SpawnerToolEditorTest2.CellXPercentatge - Rows, Columns * SpawnerToolEditorTest2.CellXPercentatge, 
-                        Rows * SpawnerToolEditorTest2.CellXPercentatge));
+                GUI.DrawTextureWithTexCoords(rectPlaygroundFill, _spawnerToolEditor.EditorSettings.backgroundTexture,
+                    new Rect(1f, SpawnerToolEditor.CellXPercentatge - _rows, _columns * SpawnerToolEditor.CellXPercentatge, 
+                        _rows * SpawnerToolEditor.CellXPercentatge));
                 
-                for (int i = 0; i < sp.Blocks.Count; i++)
+                for (int i = 0; i < sp.GetBlocks.Count; i++)
                 {
-                    sp.Blocks[i].Draw();
+                    sp.GetBlocks[i].Draw();
 
-                    if (sp.SelectedSpawnerBlock != sp.Blocks[i])
+                    if (sp.GetSelectedBlock != sp.GetBlocks[i])
                     {
-                        if (!rectPlaygroundFill.Contains(sp.Blocks[i].GetRect().position))
+                        if (!rectPlaygroundFill.Contains(sp.GetBlocks[i].GetRect().position))
                         {
                             //RemoveBlock(Blocks[i]);
                         }
@@ -57,16 +76,7 @@ namespace SpawnerTool
             /* if (_scrollingHorizontal)
              {
                  _scrollPosition = _scrollSave;
-             }*
+             }*/
         }
-
-
-        public void HasLostReference(SpawnerToolEditor spawnerToolEditorTest2)
-        {
-            if (SpawnerToolEditorTest2 == null)
-            {
-                SpawnerToolEditorTest2 = spawnerToolEditorTest2;
-            }
-        }*/
     }
 }
