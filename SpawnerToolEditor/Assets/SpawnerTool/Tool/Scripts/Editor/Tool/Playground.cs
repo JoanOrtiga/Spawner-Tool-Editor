@@ -27,6 +27,8 @@ namespace SpawnerTool
 
         [SerializeField] private float _width = 500;
         [SerializeField] private float _height = 500;
+
+        public bool GridMagnet { get; set; } = true;
         
         public Playground(SpawnerToolEditor spawnerToolEditor)
         {

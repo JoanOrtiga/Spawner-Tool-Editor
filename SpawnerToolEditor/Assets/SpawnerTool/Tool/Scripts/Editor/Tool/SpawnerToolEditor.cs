@@ -10,6 +10,8 @@ namespace SpawnerTool
     {
         #region Variables
 
+        #region Static
+
         private static readonly float _scrollbarSize = 13;
         private static readonly float _scrollBarPixelSize = 13;
         private static readonly float _unityWindowPixelBug = 6;
@@ -18,6 +20,10 @@ namespace SpawnerTool
         public static readonly Vector2 CellSize = new Vector2(100, 100);
         public static readonly float CellXPercentatge = 0.2f;
         public static readonly float SecondsXCell = 5f;
+
+        #endregion
+
+        #region References & objects
 
         [SerializeField] private SpawnerToolEditor _editorWindow;
         public SpawnerToolEditor EditorWindow => _editorWindow;
@@ -30,21 +36,16 @@ namespace SpawnerTool
         public SpawnerToolEditorSettings EditorSettings => _editorSettings;
 
         //Fields:
-        private RoundField _roundField;
-        private RoundTotalTimeField _roundTotalTimeField;
-        private TracksField _tracksField;
+        [SerializeField] private RoundField _roundField;
+        [SerializeField] private RoundTotalTimeField _roundTotalTimeField;
+        [SerializeField] private TracksField _tracksField;
+        [SerializeField] private GridMagnetField _gridMagnetField;
+        [SerializeField] private DefaultEnemyBlock _defaultEnemyBlock;
 
-        [SerializeField] private int _currentRound;
-
-        public int CurrentRound
-        {
-            get => _currentRound;
-            set => _currentRound = value;
-        }
-
+        #endregion
+        
         public Vector2 WindowSize { get; private set; }
-
-
+        
         //Blocks
         [SerializeField] private List<SpawnerBlock> getBlocks = new List<SpawnerBlock>();
         public List<SpawnerBlock> GetBlocks => getBlocks;
@@ -66,7 +67,16 @@ namespace SpawnerTool
             set => _roundTotalTime = value;
         }
 
+        [SerializeField] private int _currentRound;
+        public int CurrentRound
+        {
+            get => _currentRound;
+            set => _currentRound = value;
+        }
+        
         #endregion
+
+        #region WindowOpening
 
         [MenuItem("SpawnerTool/Spawner")]
         public static void ShowWindow()
@@ -131,6 +141,9 @@ namespace SpawnerTool
             return false;
         }
 
+        #endregion
+
+        #region ToolConfiguration
         private void CheckConfiguration(SpawnerGraph spawnerGraph = null)
         {
             if (_editorSettings == null)
@@ -141,7 +154,7 @@ namespace SpawnerTool
                 CreateGraphController(spawnerGraph);
             if (_playground == null)
                 CreatePlayGround();
-            if (_roundField == null || _roundTotalTimeField == null || _tracksField == null)
+            if (_roundField == null || _roundTotalTimeField == null || _tracksField == null || _gridMagnetField == null || _defaultEnemyBlock == null)
                 CreateFields();
         }
 
@@ -171,8 +184,11 @@ namespace SpawnerTool
             _roundField = new RoundField(this);
             _roundTotalTimeField = new RoundTotalTimeField(this);
             _tracksField = new TracksField(this);
+            _gridMagnetField = new GridMagnetField(this);
+            _defaultEnemyBlock = new DefaultEnemyBlock(this);
         }
-
+        #endregion
+        
         private void OnGUI()
         {
             CheckConfiguration();
@@ -192,6 +208,153 @@ namespace SpawnerTool
 
         private void InputTool()
         {
+            Event e = Event.current;
+            
+            _roundTotalTimeField.Input(e);
+            _roundField.Input(e);
+            _tracksField.Input(e);
+            
+           /* if (e.type == EventType.MouseDown)
+            {
+                bool inInputField = false;
+                for (int i = 0; i < inputFields.Count; i++)
+                {
+                    if (inputFields[i].Contains(mousePosition))
+                    {
+                        inInputField = true;
+                    }
+                }
+
+                if (!inInputField)
+                {
+                    GUI.FocusControl("");
+                }
+
+                if (!_rectRoundBackground.Contains(mousePosition))
+                {
+                    if (_round != String.Empty)
+                    {
+                        if (int.Parse(_round) < 0)
+                        {
+                            _round = "0";
+                        }
+                    }
+                    else
+                    {
+                        _round = "0";
+                    }
+                }
+
+                Repaint();
+            }
+            
+            /*else if (e.type == EventType.ScrollWheel)
+            {
+                if (_rectRoundBackground.Contains(mousePosition))
+                {
+                    if (e.delta.y > 0)
+                    {
+                        if (_round == String.Empty)
+                        {
+                            _round = "0";
+                        }
+
+                        string lastRound = _round;
+
+                        _round = (int.Parse(_round) - 1).ToString();
+                        if (int.Parse(_round) < 0)
+                        {
+                            _round = "0";
+                        }
+
+                    }
+                    else
+                    {
+                        if (_round == String.Empty)
+                        {
+                            _round = "0";
+                        }
+
+                        string lastRound = _round;
+
+                        _round = (int.Parse(_round) + 1).ToString();
+                        if (int.Parse(_round) > _editorSettings.maxRounds)
+                        {
+                            _round = _editorSettings.maxRounds.ToString();
+                        }
+                    }
+
+                    Repaint();
+                }
+                else if (_rectTotalTimeTextField.Contains(mousePosition))
+                {
+                    if (e.delta.y > 0)
+                    {
+                        _totalTime = (float.Parse(_totalTime) - 1.0f).ToString();
+                        if (float.Parse(_totalTime) < 1.0f)
+                        {
+                            _totalTime = "1f";
+                        }
+                    }
+                    else
+                    {
+                        _totalTime = (float.Parse(_totalTime) + 1).ToString();
+                        if (float.Parse(_totalTime) > _editorSettings.maxTotalTime)
+                        {
+                            _totalTime = _editorSettings.maxTotalTime.ToString();
+                        }
+                    }
+
+                    Repaint();
+                }
+                else if (_rectTracksTextField.Contains(mousePosition))
+                {
+                    if (e.delta.y > 0)
+                    {
+                        _tracks = (int.Parse(_tracks) - 1).ToString();
+                        if (int.Parse(_tracks) < _editorSettings.minTracks)
+                        {
+                            _tracks = _editorSettings.minTracks.ToString();
+                        }
+                    }
+                    else
+                    {
+                        _tracks = (int.Parse(_tracks) + 1).ToString();
+                        if (int.Parse(_tracks) > _editorSettings.maxTracks)
+                        {
+                            _tracks = _editorSettings.maxTracks.ToString();
+                        }
+                    }
+
+                    Repaint();
+                }
+                else if (_rectScrollView.Contains(mousePosition))
+                {
+                    if (_inputControlPressed is true)
+                    {
+                        _scrollingHorizontal = true;
+                        _scrollPosition += new Vector2(e.delta.y * HorizontalScrollSpeed, 0);
+                        _scrollPosition = new Vector2(Mathf.Clamp(_scrollPosition.x, 0, _width),
+                            Mathf.Clamp(_scrollPosition.y, 0, _height));
+                    }
+                }
+            }
+
+            if (e.type == EventType.KeyDown)
+            {
+                if (e.keyCode == KeyCode.LeftControl || e.keyCode == KeyCode.RightControl)
+                {
+                    _inputControlPressed = true;
+                }
+            }
+            else if (e.type == EventType.KeyUp)
+            {
+                if (e.keyCode == KeyCode.LeftControl || e.keyCode == KeyCode.RightControl)
+                {
+                    _inputControlPressed = false;
+                    _scrollingHorizontal = false;
+                }
+            }*/
         }
 
         private void UpdateTool()
@@ -204,12 +367,12 @@ namespace SpawnerTool
             _roundField.Draw();
             _roundTotalTimeField.Draw();
             _tracksField.Draw();
+            _gridMagnetField.Draw();
             /*
             Bin();
             ColorPicker();*/
             _playground.Draw();
-            /* GridMagnet();
-             EnemyBlock();*/ /////
+            _defaultEnemyBlock.Draw();
         }
     }
 }

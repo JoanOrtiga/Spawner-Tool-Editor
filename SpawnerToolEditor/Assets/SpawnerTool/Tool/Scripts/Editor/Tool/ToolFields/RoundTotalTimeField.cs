@@ -1,8 +1,10 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace SpawnerTool
 {
+    [Serializable]
     public class RoundTotalTimeField
     {
         private SpawnerToolEditor _spawnerToolEditor;
@@ -10,16 +12,70 @@ namespace SpawnerTool
         private Rect _totalTimeTitle = new Rect(70, 10, 77, 15);
         private Rect _totalTimeTextField = new Rect(75, 30, 70, 20);
 
+        [SerializeField] private string _roundTotalTimeString = "25";
+        private string _savedRoundTotalTimeString;
+
+        private readonly string _controlName = "RoundTotalTime";
+
         public RoundTotalTimeField(SpawnerToolEditor spawnerToolEditor)
         {
             _spawnerToolEditor = spawnerToolEditor;
         }
+
+        public void Input(Event e)
+        {
+            if (e.type == EventType.MouseDown)
+            {
+                bool inInputField = _totalTimeTextField.Contains(e.mousePosition);
+
+                if (!inInputField)
+                {
+                    GUI.FocusControl("");
+                    _spawnerToolEditor.Repaint();
+                }
+            }
+
+            if (e.type == EventType.ScrollWheel)
+            {
+                if (_totalTimeTextField.Contains(e.mousePosition))
+                {
+                    _roundTotalTimeString = _savedRoundTotalTimeString;
+                    
+                    string totalTime = _roundTotalTimeString;
+
+                    if (e.delta.y > 0)
+                    {
+                        totalTime = (float.Parse(totalTime) - 1.0f).ToString();
+                        if (float.Parse(totalTime) < 1.0f)
+                        {
+                            totalTime = "1f";
+                        }
+                    }
+                    else
+                    {
+                        totalTime = (float.Parse(totalTime) + 1).ToString();
+                        if (float.Parse(totalTime) > _spawnerToolEditor.EditorSettings.maxTotalTime)
+                        {
+                            totalTime = _spawnerToolEditor.EditorSettings.maxTotalTime.ToString();
+                        }
+                    }
+                    
+                    _roundTotalTimeString = totalTime;
+                    _spawnerToolEditor.RoundTotalTime = float.Parse(totalTime);
+                    
+                    _spawnerToolEditor.Repaint();
+                }
+            }
+        }
         
         public void Draw()
         {
-            string workingTime = _spawnerToolEditor.RoundTotalTime.ToString();
-            string roundTotalTime = workingTime;
             GUI.Label(_totalTimeTitle, "Total time (s)");
+            
+            string roundTotalTime = _roundTotalTimeString;
+            string workingTime = _roundTotalTimeString;
+
+            GUI.SetNextControlName(_controlName);
             roundTotalTime = GUI.TextField(_totalTimeTextField, roundTotalTime, _spawnerToolEditor.EditorSettings.maxCharactersTotalTime);
             roundTotalTime = Regex.Replace(roundTotalTime, @"[^0-9,]", "");
 
@@ -32,23 +88,42 @@ namespace SpawnerTool
                 }
             }
 
+
             if (totalComas >= 2)
             {
                 roundTotalTime = workingTime;
             }
+            
+            
 
-            if (roundTotalTime == string.Empty)
-                return;
-
-            if (float.Parse(roundTotalTime) > _spawnerToolEditor.EditorSettings.maxTotalTime)
+            float roundTime;
+            if (float.TryParse(roundTotalTime, out roundTime) && roundTotalTime[roundTotalTime.Length-1] != ',')
             {
-                roundTotalTime = _spawnerToolEditor.EditorSettings.maxTotalTime.ToString();
+                if (roundTime > _spawnerToolEditor.EditorSettings.maxTotalTime)
+                {
+                    roundTime = _spawnerToolEditor.EditorSettings.maxTotalTime;
+                }
+                
+                _spawnerToolEditor.PlayGround.Columns = roundTime;
+                _spawnerToolEditor.PlayGround.Columns /= SpawnerToolEditor.SecondsXCell;
+
+                _spawnerToolEditor.RoundTotalTime = roundTime;
+                _roundTotalTimeString = roundTime.ToString();
+                _savedRoundTotalTimeString = roundTime.ToString();
+
             }
-
-            _spawnerToolEditor.PlayGround.Columns = float.Parse(roundTotalTime);
-            _spawnerToolEditor.PlayGround.Columns /= SpawnerToolEditor.SecondsXCell;
-
-            _spawnerToolEditor.RoundTotalTime = float.Parse(roundTotalTime);
+            else
+            {
+                if (GUI.GetNameOfFocusedControl() == _controlName)
+                {
+                    _roundTotalTimeString = roundTotalTime;
+                }
+                else
+                {
+                    _roundTotalTimeString = _savedRoundTotalTimeString;
+                    _spawnerToolEditor.RoundTotalTime = float.Parse(_savedRoundTotalTimeString);
+                }
+            }
         }
     }
 }
