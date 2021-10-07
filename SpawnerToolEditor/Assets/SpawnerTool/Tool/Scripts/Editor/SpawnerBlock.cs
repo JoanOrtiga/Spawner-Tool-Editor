@@ -38,7 +38,7 @@ namespace SpawnerTool
             _rect = rect;
             _color = Color.white;
         }
-/*
+
         public void Update(Vector2 mouseDrag, float time, int track)
         {
             spawnEnemyData.currentTrack = track;
@@ -57,7 +57,7 @@ namespace SpawnerTool
         {
             size.x = Mathf.Max(size.x, 20.0f);
             _size = size;
-        }*/
+        }
 
         public void Select(bool select)
         {
@@ -148,7 +148,7 @@ namespace SpawnerTool
         }
 
         public void UpdateSize()
-        {/*
+        {
             _size.x = SpawnerToolEditor.CellSize.x * SpawnerToolEditor.CellXPercentatge *
                       (spawnEnemyData.howManyEnemies * spawnEnemyData.timeBetweenSpawn);
             _size.x = Mathf.Max(_size.x, 20.0f);
@@ -156,7 +156,6 @@ namespace SpawnerTool
             _size.y = 100f;
 
             _rect.size = _size;
-            */
         }
 
         public void ProcessInput()

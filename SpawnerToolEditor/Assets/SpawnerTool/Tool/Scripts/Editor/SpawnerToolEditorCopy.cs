@@ -915,7 +915,7 @@ namespace SpawnerTool
 
         #region Inspector
 
-        void UpdateInspector()
+        void UpdateInspector() 
         {
             if (_selectedSpawnerBlock != null)
             {
