@@ -8,6 +8,8 @@ namespace SpawnerTool
     {
         public SpawnEnemyData spawnEnemyData = new SpawnEnemyData();
         public bool init = false;
+        public bool selected = false;
+        
       /*  public List<EnemyInfo> enemyInfo = new List<EnemyInfo>();
 
         public Color GetEnemyColor(string enemyName)
@@ -36,6 +38,8 @@ namespace SpawnerTool
             }
         }
 */
+        
+      
         public string CheckEnemyName(string enemyName)
         {
             bool exists = false;

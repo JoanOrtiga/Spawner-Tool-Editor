@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using UnityEditor;
 using UnityEngine;
 
 namespace SpawnerTool
@@ -48,7 +49,9 @@ namespace SpawnerTool
                         totalTime = (float.Parse(totalTime) - 1.0f).ToString();
                         if (float.Parse(totalTime) < 1.0f)
                         {
-                            totalTime = "1f";
+                            totalTime = "1";
+                            //EditorUtility.DisplayDialog("Error", "Time must be greater than 1 second.", "ok", DialogOptOutDecisionType.ForThisSession, "LessThanOne");
+                            
                         }
                     }
                     else

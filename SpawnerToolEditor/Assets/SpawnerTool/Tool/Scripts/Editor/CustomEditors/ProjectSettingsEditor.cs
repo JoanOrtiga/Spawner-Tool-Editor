@@ -26,9 +26,8 @@ namespace SpawnerTool
             CheckEnemyNames(enemyNames);
             
             ListToGUI(enemyNames,"Enemy Blocks Color", ref _colorMenu);
+            
             serializedObject.ApplyModifiedProperties();
-
-            serializedObject.Update();
         }
         
         private void ListToGUI(SerializedProperty names, string itemType, ref bool visible)
@@ -37,19 +36,19 @@ namespace SpawnerTool
             if (visible)
             {
                 EditorGUI.indentLevel++;
-                EditorGUI.indentLevel++;
+                EditorGUI.indentLevel++;//
 
                 for (int i = 0; i < names.arraySize; i++)
                 {
                     string enemyName = names.GetArrayElementAtIndex(i).stringValue;
-                    if (!_projectSettings.GetAllColors().ContainsKey(enemyName))
+                    if (!_projectSettings.EnemyColorByType.ContainsKey(enemyName))
                     {
-                        _projectSettings.GetAllColors().Add(enemyName, Color.black);
+                        _projectSettings.EnemyColorByType.Add(enemyName, Color.black);
                         Repaint();
                     }
 
-                    _projectSettings.GetAllColors()[enemyName] = EditorGUILayout.ColorField(new GUIContent(enemyName),
-                        _projectSettings.GetAllColors()[enemyName], true, false, false);
+                    _projectSettings.EnemyColorByType[enemyName] = EditorGUILayout.ColorField(new GUIContent(enemyName),
+                        _projectSettings.EnemyColorByType[enemyName], true, false, false);
                 }
                 
                 EditorGUI.indentLevel--;

@@ -13,7 +13,7 @@ namespace SpawnerTool
         #region Static
 
         private static readonly float _scrollbarSize = 13;
-        private static readonly float _scrollBarPixelSize = 13;
+        public static readonly float _scrollBarPixelSize = 13;
         private static readonly float _unityWindowPixelBug = 6;
 
         //CELLS
@@ -28,6 +28,7 @@ namespace SpawnerTool
         [SerializeField] private SpawnerToolEditor _editorWindow;
         public SpawnerToolEditor EditorWindow => _editorWindow;
         [SerializeField] private SpawnerToolInspector _toolInspector;
+        public SpawnerToolInspector Inspector => _toolInspector;
         [SerializeField] private SpawnerToolGraphController _graphController;
         public SpawnerToolGraphController GraphController => _graphController;
         [SerializeField] private Playground _playground;
@@ -35,24 +36,22 @@ namespace SpawnerTool
         [SerializeField] private SpawnerToolEditorSettings _editorSettings;
         public SpawnerToolEditorSettings EditorSettings => _editorSettings;
 
+        [SerializeField] private BlockController _blockController;
+        public BlockController SpawnerBlockController => _blockController;
+
         //Fields:
         [SerializeField] private RoundField _roundField;
         [SerializeField] private RoundTotalTimeField _roundTotalTimeField;
         [SerializeField] private TracksField _tracksField;
         [SerializeField] private GridMagnetField _gridMagnetField;
         [SerializeField] private DefaultEnemyBlock _defaultEnemyBlock;
+        private BinField _binField;
 
         #endregion
         
         public Vector2 WindowSize { get; private set; }
         
-        //Blocks
-        [SerializeField] private List<SpawnerBlock> getBlocks = new List<SpawnerBlock>();
-        public List<SpawnerBlock> GetBlocks => getBlocks;
-        [SerializeField] private SpawnerBlock _selectedBlock;
-        public SpawnerBlock GetSelectedBlock => _selectedBlock;
-
-
+        
         [SerializeField] private int _roundTracks;
         public int RoundTracks
         {
@@ -154,7 +153,9 @@ namespace SpawnerTool
                 CreateGraphController(spawnerGraph);
             if (_playground == null)
                 CreatePlayGround();
-            if (_roundField == null || _roundTotalTimeField == null || _tracksField == null || _gridMagnetField == null || _defaultEnemyBlock == null)
+            if (_blockController == null)
+                CreateBlockController();
+            if (_roundField == null || _roundTotalTimeField == null || _tracksField == null || _gridMagnetField == null || _defaultEnemyBlock == null || _binField == null)
                 CreateFields();
         }
 
@@ -164,9 +165,14 @@ namespace SpawnerTool
             SpawnerBlock.Texture = _editorSettings.whiteTexture;
         }
 
+        private void CreateBlockController()
+        {
+            _blockController = new BlockController(this);
+        }
+
         private void CreateInspector()
         {
-            _toolInspector = new SpawnerToolInspector();
+            _toolInspector = new SpawnerToolInspector(this);
         }
 
         private void CreatePlayGround()
@@ -186,8 +192,21 @@ namespace SpawnerTool
             _tracksField = new TracksField(this);
             _gridMagnetField = new GridMagnetField(this);
             _defaultEnemyBlock = new DefaultEnemyBlock(this);
+            _binField = new BinField(this);
         }
         #endregion
+        
+        private void OnEnable()
+        {
+            if(_editorSettings != null)
+                SpawnerBlock.Texture = _editorSettings.whiteTexture;
+        }
+        
+        private void OnDisable()
+        {
+            Inspector.OnDisable();
+            _blockController.OnDisable();//
+        }
         
         private void OnGUI()
         {
@@ -206,6 +225,29 @@ namespace SpawnerTool
             DrawTool();
         }
 
+        private void Update()
+        {
+            if (hasFocus)
+                return;
+
+            if (_graphController.IsGraphNull())
+                return;
+            
+            _blockController.Update();
+
+            Repaint();
+        }
+
+        private void OnInspectorUpdate()
+        {
+            if (_graphController.IsGraphNull())
+                return;
+
+            _blockController.Update();
+
+            Repaint();
+        }
+
         private void InputTool()
         {
             Event e = Event.current;
@@ -213,153 +255,17 @@ namespace SpawnerTool
             _roundTotalTimeField.Input(e);
             _roundField.Input(e);
             _tracksField.Input(e);
-            
-           /* if (e.type == EventType.MouseDown)
-            {
-                bool inInputField = false;
-                for (int i = 0; i < inputFields.Count; i++)
-                {
-                    if (inputFields[i].Contains(mousePosition))
-                    {
-                        inInputField = true;
-                    }
-                }
-
-                if (!inInputField)
-                {
-                    GUI.FocusControl("");
-                }
-
-                if (!_rectRoundBackground.Contains(mousePosition))
-                {
-                    if (_round != String.Empty)
-                    {
-                        if (int.Parse(_round) < 0)
-                        {
-                            _round = "0";
-                        }
-                    }
-                    else
-                    {
-                        _round = "0";
-                    }
-                }
-
-                Repaint();
-            }
-            
-            /*else if (e.type == EventType.ScrollWheel)
-            {
-                if (_rectRoundBackground.Contains(mousePosition))
-                {
-                    if (e.delta.y > 0)
-                    {
-                        if (_round == String.Empty)
-                        {
-                            _round = "0";
-                        }
-
-                        string lastRound = _round;
-
-                        _round = (int.Parse(_round) - 1).ToString();
-                        if (int.Parse(_round) < 0)
-                        {
-                            _round = "0";
-                        }
-
-                    }
-                    else
-                    {
-                        if (_round == String.Empty)
-                        {
-                            _round = "0";
-                        }
-
-                        string lastRound = _round;
-
-                        _round = (int.Parse(_round) + 1).ToString();
-                        if (int.Parse(_round) > _editorSettings.maxRounds)
-                        {
-                            _round = _editorSettings.maxRounds.ToString();
-                        }
-                    }
-
-                    Repaint();
-                }
-                else if (_rectTotalTimeTextField.Contains(mousePosition))
-                {
-                    if (e.delta.y > 0)
-                    {
-                        _totalTime = (float.Parse(_totalTime) - 1.0f).ToString();
-                        if (float.Parse(_totalTime) < 1.0f)
-                        {
-                            _totalTime = "1f";
-                        }
-                    }
-                    else
-                    {
-                        _totalTime = (float.Parse(_totalTime) + 1).ToString();
-                        if (float.Parse(_totalTime) > _editorSettings.maxTotalTime)
-                        {
-                            _totalTime = _editorSettings.maxTotalTime.ToString();
-                        }
-                    }
-
-                    Repaint();
-                }
-                else if (_rectTracksTextField.Contains(mousePosition))
-                {
-                    if (e.delta.y > 0)
-                    {
-                        _tracks = (int.Parse(_tracks) - 1).ToString();
-                        if (int.Parse(_tracks) < _editorSettings.minTracks)
-                        {
-                            _tracks = _editorSettings.minTracks.ToString();
-                        }
-                    }
-                    else
-                    {
-                        _tracks = (int.Parse(_tracks) + 1).ToString();
-                        if (int.Parse(_tracks) > _editorSettings.maxTracks)
-                        {
-                            _tracks = _editorSettings.maxTracks.ToString();
-                        }
-                    }
-
-                    Repaint();
-                }
-                else if (_rectScrollView.Contains(mousePosition))
-                {
-                    if (_inputControlPressed is true)
-                    {
-                        _scrollingHorizontal = true;
-                        _scrollPosition += new Vector2(e.delta.y * HorizontalScrollSpeed, 0);
-                        _scrollPosition = new Vector2(Mathf.Clamp(_scrollPosition.x, 0, _width),
-                            Mathf.Clamp(_scrollPosition.y, 0, _height));
-                    }
-                }
-            }
-
-            if (e.type == EventType.KeyDown)
-            {
-                if (e.keyCode == KeyCode.LeftControl || e.keyCode == KeyCode.RightControl)
-                {
-                    _inputControlPressed = true;
-                }
-            }
-            else if (e.type == EventType.KeyUp)
-            {
-                if (e.keyCode == KeyCode.LeftControl || e.keyCode == KeyCode.RightControl)
-                {
-                    _inputControlPressed = false;
-                    _scrollingHorizontal = false;
-                }
-            }*/
+            _defaultEnemyBlock.Input(e);
+            _blockController.Input(e);
+            _binField.Input(e);
+            _toolInspector.Input(e);
         }
 
         private void UpdateTool()
         {
             _playground.Update();
+            _blockController.Update();
+            _toolInspector.Update();
         }
 
         private void DrawTool()
@@ -368,9 +274,8 @@ namespace SpawnerTool
             _roundTotalTimeField.Draw();
             _tracksField.Draw();
             _gridMagnetField.Draw();
-            /*
-            Bin();
-            ColorPicker();*/
+            _binField.Draw();
+            //ColorPicker();
             _playground.Draw();
             _defaultEnemyBlock.Draw();
         }

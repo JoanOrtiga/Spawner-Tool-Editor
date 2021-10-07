@@ -11,9 +11,10 @@ namespace SpawnerTool
 
         [SerializeField] private SpawnerToolEditor _spawnerToolEditor;
         [SerializeField] private Vector2 _scrollPosition;
+        public Vector2 ScrollPosition => _scrollPosition;
 
         [SerializeField] private float _rows = 5f;
-        public float Rows
+        public float Rows   
         {
             get => _rows;
             set => _rows = value;
@@ -27,6 +28,7 @@ namespace SpawnerTool
 
         [SerializeField] private float _width = 500;
         [SerializeField] private float _height = 500;
+        public float Height => _height;
 
         public bool GridMagnet { get; set; } = true;
         
@@ -60,18 +62,7 @@ namespace SpawnerTool
                     new Rect(1f, SpawnerToolEditor.CellXPercentatge - _rows, _columns * SpawnerToolEditor.CellXPercentatge, 
                         _rows * SpawnerToolEditor.CellXPercentatge));
                 
-                for (int i = 0; i < sp.GetBlocks.Count; i++)
-                {
-                    sp.GetBlocks[i].Draw();
-
-                    if (sp.GetSelectedBlock != sp.GetBlocks[i])
-                    {
-                        if (!rectPlaygroundFill.Contains(sp.GetBlocks[i].GetRect().position))
-                        {
-                            //RemoveBlock(Blocks[i]);
-                        }
-                    }
-                }
+                _spawnerToolEditor.SpawnerBlockController.Draw();
             }
             GUI.EndScrollView();
             
@@ -79,6 +70,17 @@ namespace SpawnerTool
              {
                  _scrollPosition = _scrollSave;
              }*/
+        }
+
+        public Vector2 GetMousePositionInsidePlayground(Vector2 mousePosition)
+        {
+            return mousePosition - MarginToPlaygroundSize + _scrollPosition;
+        }
+
+        public bool IsPositionInsidePlayground(Vector2 position)
+        {
+            Rect playground = new Rect(MarginToPlaygroundSize.x, MarginToPlaygroundSize.y, _width, _height);    
+            return playground.Contains(position);
         }
     }
 }

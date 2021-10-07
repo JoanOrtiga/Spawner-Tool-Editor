@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -13,7 +14,7 @@ namespace SpawnerTool
 
         public const string Unnamed = "No type";
 
-        private bool _visible = false;
+        private bool _visible = true;
 
         private void OnEnable()
         {
@@ -30,7 +31,11 @@ namespace SpawnerTool
 
         public override void OnInspectorGUI()
         {
-            DrawEnemyData();
+            if(_sp.selected)
+                DrawEnemyData();
+            else
+                EditorGUILayout.HelpBox("\n\n\n  No block selected. Select a block to see and modify its information. \n\n\n", MessageType.Info, true);
+            
             DrawToolSettings();
             
             if (Event.current.type == EventType.Used || _sp.init)
@@ -104,18 +109,44 @@ namespace SpawnerTool
             title.fontSize = 13;
             title.fontStyle = FontStyle.Bold;
             EditorGUILayout.Space(30);
-            EditorGUILayout.LabelField(new GUIContent("SpawnerTool Project Settings", "You can modify this in ProjectSettings.asset."), title,
+            EditorGUILayout.LabelField(new GUIContent("Enemy Colors by Type", "You can modify this in ProjectSettings.asset."), title,
                 GUILayout.Height(20));
             EditorGUILayout.Space();
 
             SerializedObject projectSettingsSerialized = new SerializedObject(ProjectConfiguration.Instance.GetProjectSettings());
-            SpawnerToolEditorUtility.ListToGUI(this, projectSettingsSerialized.FindProperty("enemyNames"), 
-                ProjectConfiguration.Instance.GetProjectSettings().GetAllColors(),"Enemy Blocks Color", 
+            ListToGUI(this, projectSettingsSerialized.FindProperty("enemyNames"),"Enemy Blocks Color", 
                 ref _visible);
             
-            serializedObject.Update();
+            serializedObject.ApplyModifiedProperties();
         }
         
-        
+        public void ListToGUI(Editor editor, SerializedProperty names, string itemType,
+            ref bool visible)
+        {
+            Dictionary<string, Color> dictionary = ProjectConfiguration.Instance.GetProjectSettings().EnemyColorByType;
+
+            visible = EditorGUILayout.Foldout(visible, itemType);
+            if (visible)
+            {
+                EditorGUI.indentLevel++;
+                EditorGUI.indentLevel++;
+
+                for (int i = 0; i < names.arraySize; i++)
+                {
+                    string enemyName = names.GetArrayElementAtIndex(i).stringValue;
+                    if (!dictionary.ContainsKey(enemyName))
+                    {
+                        dictionary.Add(enemyName, Color.black);
+                        editor.Repaint();
+                    }
+
+                    dictionary[enemyName] = EditorGUILayout.ColorField(new GUIContent(enemyName),
+                        dictionary[enemyName], true, false, false);
+                }
+
+                EditorGUI.indentLevel--;
+                EditorGUI.indentLevel--;
+            }
+        }
     }
 }

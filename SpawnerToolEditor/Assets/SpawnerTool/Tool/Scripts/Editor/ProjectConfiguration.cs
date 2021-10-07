@@ -56,8 +56,7 @@ namespace SpawnerTool
 
         public ProjectSettings GetProjectSettings()
         {
-            //This is a quaternion.
-            Quaternion galdo = new Quaternion();
+            //Easter Egg: Quaternion galdo = new Quaternion();
             return _projectSettings;
         }
 
@@ -102,5 +101,7 @@ namespace SpawnerTool
 
             return _spawnerToolInspectorData;
         }
+
+        
     }
 }

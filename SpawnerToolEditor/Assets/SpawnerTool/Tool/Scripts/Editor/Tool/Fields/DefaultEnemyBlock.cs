@@ -15,6 +15,17 @@ namespace SpawnerTool
             _spawnerToolEditor = spawnerToolEditor;
         }
 
+        public void Input(Event e)
+        {
+            if (e.type == EventType.MouseDown)
+            {
+                if (_rectEnemyBlockDefault.Contains(e.mousePosition))
+                {
+                    _spawnerToolEditor.SpawnerBlockController.NewBlock(e.mousePosition);
+                }
+            }
+        }
+
         public void Draw()
         {
             GUI.DrawTexture(_rectEnemyBlockDefault, _spawnerToolEditor.EditorSettings.whiteTexture);

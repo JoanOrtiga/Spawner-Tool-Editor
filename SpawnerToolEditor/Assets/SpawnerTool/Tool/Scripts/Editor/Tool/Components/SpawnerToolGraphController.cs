@@ -35,8 +35,8 @@ namespace SpawnerTool
             }
             
             _currentGraph = newGraph;
+            LoadRound(_spawnerToolEditor.CurrentRound);
         }
-
         
         public void SaveRound(int round)
         {
@@ -59,7 +59,7 @@ namespace SpawnerTool
 
             Round savedRound = new Round(new List<SpawnEnemyData>(), _spawnerToolEditor.RoundTotalTime, _spawnerToolEditor.RoundTracks);
 
-            foreach (SpawnerBlock block in _spawnerToolEditor.GetBlocks)
+            foreach (SpawnerBlock block in _spawnerToolEditor.SpawnerBlockController.Blocks)
             {
                 savedRound.spawningEnemiesData.Add(block.spawnEnemyData);
             }
@@ -69,7 +69,7 @@ namespace SpawnerTool
 
         public void LoadRound(int round)
         {
-            _spawnerToolEditor.GetBlocks.Clear();
+            _spawnerToolEditor.SpawnerBlockController.Blocks.Clear();
             
             if (_currentGraph == null)
             {
@@ -78,16 +78,21 @@ namespace SpawnerTool
             }
 
             if (_currentGraph.GetAllRounds() == null)
-                return;
-
-            if (_currentGraph.GetAllRounds().Count <= round)
-                return;
-
+            {
+                var allRounds = _currentGraph.GetAllRounds();
+                allRounds = new List<Round>();
+            }
+            
+            while (_currentGraph.GetAllRounds().Count <= round)
+            {
+                _currentGraph.GetAllRounds().Add(new Round(new List<SpawnEnemyData>(), _spawnerToolEditor.EditorSettings.DefaultTotalTime, _spawnerToolEditor.EditorSettings.DefaultTracks));
+            }
+            
             //Second, if round exists, we load its settings.
 
             _spawnerToolEditor.RoundTracks = _currentGraph.GetAllRounds()[round].totalTracks;
             _spawnerToolEditor.RoundTotalTime = _currentGraph.GetAllRounds()[round].totalRoundTime;
-            
+
             //Lastly, we create blocks for each enemies data.
             foreach (var enemySpawnData in _currentGraph.GetAllRounds()[round].spawningEnemiesData)
             {
@@ -105,7 +110,7 @@ namespace SpawnerTool
                 };
                 
                 SpawnerBlock spawnerBlock = new SpawnerBlock(newBlockRect, enemySpawnData);
-                _spawnerToolEditor.GetBlocks.Add(spawnerBlock);
+                _spawnerToolEditor.SpawnerBlockController.Blocks.Add(spawnerBlock);
             }
         }
         

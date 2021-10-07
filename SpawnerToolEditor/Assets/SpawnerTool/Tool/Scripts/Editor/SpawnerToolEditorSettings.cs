@@ -11,9 +11,12 @@ namespace SpawnerTool
         [Header("Configuration Settings")] 
         public int maxRounds;
         public int maxCharactersRounds = 3;
+        [Min(1.0f)] public float minTotalTime = 1;
+        public float DefaultTotalTime = 25.0f;
         public float maxTotalTime;
         public int maxCharactersTotalTime = 6;
         public int minTracks = 5;
+        public int DefaultTracks = 5;
         public int maxTracks = 100;
         public int maxCharactersTracks = 3;
         
