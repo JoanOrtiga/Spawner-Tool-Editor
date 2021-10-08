@@ -114,13 +114,13 @@ namespace SpawnerTool
             EditorGUILayout.Space();
 
             SerializedObject projectSettingsSerialized = new SerializedObject(ProjectConfiguration.Instance.GetProjectSettings());
-            ListToGUI(this, projectSettingsSerialized.FindProperty("enemyNames"),"Enemy Blocks Color", 
+            ListToGUI(this, projectSettingsSerialized.FindProperty("enemyNames"), projectSettingsSerialized.FindProperty("enemyColors"),"Enemy Blocks Color", 
                 ref _visible);
             
             serializedObject.ApplyModifiedProperties();
         }
         
-        public void ListToGUI(Editor editor, SerializedProperty names, string itemType,
+        public void ListToGUI(Editor editor, SerializedProperty names, SerializedProperty enemyColors, string itemType,
             ref bool visible)
         {
             Dictionary<string, Color> dictionary = ProjectConfiguration.Instance.GetProjectSettings().EnemyColorByType;
@@ -142,6 +142,8 @@ namespace SpawnerTool
 
                     dictionary[enemyName] = EditorGUILayout.ColorField(new GUIContent(enemyName),
                         dictionary[enemyName], true, false, false);
+
+                    enemyColors.GetArrayElementAtIndex(i).colorValue = dictionary[enemyName];
                 }
 
                 EditorGUI.indentLevel--;

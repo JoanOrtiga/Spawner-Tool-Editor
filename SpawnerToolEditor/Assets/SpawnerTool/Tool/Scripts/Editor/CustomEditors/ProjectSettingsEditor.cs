@@ -32,11 +32,13 @@ namespace SpawnerTool
         
         private void ListToGUI(SerializedProperty names, string itemType, ref bool visible)
         {
+            SerializedProperty enemyColors = serializedObject.FindProperty("enemyColors");
+
             visible = EditorGUILayout.Foldout(visible, itemType);
             if (visible)
             {
                 EditorGUI.indentLevel++;
-                EditorGUI.indentLevel++;//
+                EditorGUI.indentLevel++;
 
                 for (int i = 0; i < names.arraySize; i++)
                 {
@@ -49,6 +51,8 @@ namespace SpawnerTool
 
                     _projectSettings.EnemyColorByType[enemyName] = EditorGUILayout.ColorField(new GUIContent(enemyName),
                         _projectSettings.EnemyColorByType[enemyName], true, false, false);
+
+                    enemyColors.GetArrayElementAtIndex(i).colorValue = _projectSettings.EnemyColorByType[enemyName];
                 }
                 
                 EditorGUI.indentLevel--;

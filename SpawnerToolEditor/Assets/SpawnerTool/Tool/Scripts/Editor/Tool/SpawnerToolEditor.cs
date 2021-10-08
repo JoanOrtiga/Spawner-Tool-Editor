@@ -42,7 +42,9 @@ namespace SpawnerTool
         //Fields:
         [SerializeField] private RoundField _roundField;
         [SerializeField] private RoundTotalTimeField _roundTotalTimeField;
+        public RoundTotalTimeField GetRoundTotalTimeField => _roundTotalTimeField;
         [SerializeField] private TracksField _tracksField;
+        public TracksField GetTracksField => _tracksField;
         [SerializeField] private GridMagnetField _gridMagnetField;
         [SerializeField] private DefaultEnemyBlock _defaultEnemyBlock;
         private BinField _binField;
@@ -198,14 +200,18 @@ namespace SpawnerTool
         
         private void OnEnable()
         {
+            Selection.selectionChanged += SelectionChanged;
+            
             if(_editorSettings != null)
                 SpawnerBlock.Texture = _editorSettings.whiteTexture;
         }
         
         private void OnDisable()
         {
+            Selection.selectionChanged -= SelectionChanged;
+
             Inspector.OnDisable();
-            _blockController.OnDisable();//
+            _blockController.OnDisable();
         }
         
         private void OnGUI()
@@ -278,6 +284,16 @@ namespace SpawnerTool
             //ColorPicker();
             _playground.Draw();
             _defaultEnemyBlock.Draw();
+        }
+        
+        void SelectionChanged()
+        {
+            if (Selection.activeObject as SpawnerGraph != null)
+            { 
+                _graphController.SaveRound(_currentRound);
+                _graphController.ChangeGraph(Selection.activeObject as SpawnerGraph);
+                Repaint();
+            }
         }
     }
 }

@@ -103,8 +103,11 @@ namespace SpawnerTool
                     _spawnerToolEditor.CurrentRound = int.Parse(_savedTracks);
                 }
             }
-            
-            
+        }
+
+        public void ChangeTracks(int tracks)
+        {
+            _tracksString = tracks.ToString();
         }
     }
 }

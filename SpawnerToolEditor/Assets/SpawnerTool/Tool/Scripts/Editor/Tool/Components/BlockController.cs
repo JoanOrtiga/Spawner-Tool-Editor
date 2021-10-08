@@ -158,6 +158,8 @@ namespace SpawnerTool
         
         void SaveInspectorValues()
         {
+            if (_selectedBlock == null)
+                return;
             if (_selectedBlock.spawnEnemyData.enemyType != _spawnerToolEditor.Inspector.InspectorWindow.spawnEnemyData.enemyType)
             {
                 ChangeColor(_selectedBlock, ProjectConfiguration.Instance.GetProjectSettings().GetEnemyColor(_spawnerToolEditor.Inspector.InspectorWindow.spawnEnemyData.enemyType));

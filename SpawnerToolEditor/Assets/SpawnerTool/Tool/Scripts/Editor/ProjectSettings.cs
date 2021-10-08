@@ -49,7 +49,7 @@ namespace SpawnerTool
 
         public void LoadFromLists()
         {
-            for (int i = enemyColors.Count-1; i < enemyNames.Count; i++)
+            for (int i = enemyColors.Count-1; i < enemyNames.Count-1; i++)
             {
                 enemyColors.Add(Color.black);
             }
@@ -64,6 +64,11 @@ namespace SpawnerTool
         private void OnEnable()
         {
             LoadFromLists();
+        }
+
+        private void OnDestroy()
+        {
+            SaveToList();
         }
 
         private void OnDisable()

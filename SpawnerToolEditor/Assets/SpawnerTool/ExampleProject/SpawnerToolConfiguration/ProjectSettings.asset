@@ -15,3 +15,6 @@ MonoBehaviour:
   enemyNames:
   - High
   - Slow
+  enemyColors:
+  - {r: 1, g: 0.54523474, b: 0, a: 1}
+  - {r: 1, g: 0, b: 0.26045656, a: 1}

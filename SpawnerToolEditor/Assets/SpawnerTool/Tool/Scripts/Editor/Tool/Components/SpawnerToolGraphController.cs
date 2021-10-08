@@ -91,7 +91,9 @@ namespace SpawnerTool
             //Second, if round exists, we load its settings.
 
             _spawnerToolEditor.RoundTracks = _currentGraph.GetAllRounds()[round].totalTracks;
+            _spawnerToolEditor.GetTracksField.ChangeTracks(_spawnerToolEditor.RoundTracks);
             _spawnerToolEditor.RoundTotalTime = _currentGraph.GetAllRounds()[round].totalRoundTime;
+            _spawnerToolEditor.GetRoundTotalTimeField.ChangeTotalTime(_spawnerToolEditor.RoundTotalTime);
 
             //Lastly, we create blocks for each enemies data.
             foreach (var enemySpawnData in _currentGraph.GetAllRounds()[round].spawningEnemiesData)

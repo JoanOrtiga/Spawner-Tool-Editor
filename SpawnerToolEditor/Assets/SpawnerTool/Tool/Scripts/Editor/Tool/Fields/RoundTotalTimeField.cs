@@ -128,5 +128,10 @@ namespace SpawnerTool
                 }
             }
         }
+
+        public void ChangeTotalTime(float time)
+        {
+            _roundTotalTimeString = time.ToString();
+        }
     }
 }
