@@ -48,6 +48,7 @@ namespace SpawnerTool
         [SerializeField] private GridMagnetField _gridMagnetField;
         [SerializeField] private DefaultEnemyBlock _defaultEnemyBlock;
         private BinField _binField;
+        private GraphNameField _graphNameField;
 
         #endregion
         
@@ -157,7 +158,7 @@ namespace SpawnerTool
                 CreatePlayGround();
             if (_blockController == null)
                 CreateBlockController();
-            if (_roundField == null || _roundTotalTimeField == null || _tracksField == null || _gridMagnetField == null || _defaultEnemyBlock == null || _binField == null)
+            if (_roundField == null || _roundTotalTimeField == null || _tracksField == null || _gridMagnetField == null || _defaultEnemyBlock == null || _binField == null || _graphNameField == null)
                 CreateFields();
         }
 
@@ -195,6 +196,7 @@ namespace SpawnerTool
             _gridMagnetField = new GridMagnetField(this);
             _defaultEnemyBlock = new DefaultEnemyBlock(this);
             _binField = new BinField(this);
+            _graphNameField = new GraphNameField(this);
         }
         #endregion
         
@@ -284,6 +286,7 @@ namespace SpawnerTool
             //ColorPicker();
             _playground.Draw();
             _defaultEnemyBlock.Draw();
+            _graphNameField.Draw();
         }
         
         void SelectionChanged()

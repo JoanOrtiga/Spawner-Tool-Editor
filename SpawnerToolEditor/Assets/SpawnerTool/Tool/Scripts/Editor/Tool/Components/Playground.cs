@@ -79,7 +79,7 @@ namespace SpawnerTool
 
         public bool IsPositionInsidePlayground(Vector2 position)
         {
-            Rect playground = new Rect(MarginToPlaygroundSize.x, MarginToPlaygroundSize.y, _width, _height);    
+            Rect playground = new Rect(0, 0, _width, _height);   
             return playground.Contains(position);
         }
     }

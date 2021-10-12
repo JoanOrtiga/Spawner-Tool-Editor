@@ -9,10 +9,11 @@ namespace SpawnerTool
             float t = Mathf.InverseLerp(oldLow, oldHigh, input);
             return Mathf.Lerp(newLow, newHigh, t);
         }
-        
+       
+#if UNITY_EDITOR
         public static void DrawString(string text, Vector3 worldPos, Color color, int fontSize = 20, float oX = 0, float oY = 0)
         {
-#if UNITY_EDITOR
+
             UnityEditor.Handles.BeginGUI();
         
         
@@ -34,21 +35,23 @@ namespace SpawnerTool
             UnityEditor.Handles.Label(TransformByPixel(worldPos, oX, oY), text, style);
         
             UnityEditor.Handles.EndGUI();
-#endif
         }
 
         static Vector3 TransformByPixel(Vector3 position, float x, float y)
         {
             return TransformByPixel(position, new Vector3(x, y));
         }
-
+        
         static Vector3 TransformByPixel(Vector3 position, Vector3 translateBy)
         {
+            
             Camera cam = UnityEditor.SceneView.currentDrawingSceneView.camera;
             if (cam)
                 return cam.ScreenToWorldPoint(cam.WorldToScreenPoint(position) + translateBy);
             else
                 return position;
+            
         }
+#endif
     }
 }

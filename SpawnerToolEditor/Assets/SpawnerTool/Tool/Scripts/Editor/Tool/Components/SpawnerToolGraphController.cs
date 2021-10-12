@@ -172,5 +172,13 @@ namespace SpawnerTool
             GUILayout.FlexibleSpace();
             GUILayout.EndVertical();
         }
+
+        public string GetGraphName()
+        {
+            if(_currentGraph != null)
+                return _currentGraph.name;
+
+            return "No graph";
+        }
     }
 }

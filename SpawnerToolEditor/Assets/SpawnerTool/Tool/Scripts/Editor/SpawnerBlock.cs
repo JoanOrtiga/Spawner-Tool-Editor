@@ -9,13 +9,15 @@ namespace SpawnerTool
     {
         public static Texture2D Texture { get; set; }
         
-        public SpawnEnemyData spawnEnemyData;
+        [SerializeField] public SpawnEnemyData spawnEnemyData;
         
         [SerializeField] private Rect _rect;
         [SerializeField] private Vector2 _size;
         [SerializeField] private Color _color;
         
         [SerializeField] private bool _selected;
+
+        public Vector2 GetPosition => _rect.position;
         
         public SpawnerBlock(Vector2 position, Vector2 size, SpawnEnemyData sp = null)
         {
@@ -37,6 +39,15 @@ namespace SpawnerTool
             _size = rect.size;
             _rect = rect;
             _color = Color.white;
+        }
+
+        public SpawnerBlock(SpawnerBlock block)
+        {
+            SpawnEnemyData sed = block.spawnEnemyData;
+            spawnEnemyData = new SpawnEnemyData(sed.spawnPointID, sed.timeToStartSpawning, sed.howManyEnemies, sed.enemyType, sed.timeBetweenSpawn);
+            _rect = block._rect;
+            _size = block._size;
+            _color = block._color;
         }
 
         public void Update(Vector2 mouseDrag, float time, int track)

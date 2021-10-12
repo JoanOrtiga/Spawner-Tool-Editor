@@ -15,6 +15,10 @@ namespace SpawnerTool
         public SpawnerBlock GetSelectedBlock => _selectedBlock;
 
         private bool _movingBlock = false;
+        private bool _wantsToClone;
+        private SpawnerBlock _copyPasteBlock;
+        private bool _copyPasting;
+        private bool _pressedControl;
 
         public BlockController(SpawnerToolEditor spawnerToolEditor)
         {
@@ -28,8 +32,15 @@ namespace SpawnerTool
             Select(spawnerBlock);
             _movingBlock = true;
             _blocks.Add(_selectedBlock);
-            //_spawnerInspector.init = true;
             _spawnerToolEditor.Repaint();
+        }
+
+        public SpawnerBlock DuplicateBlock(SpawnerBlock blockToCopy)
+        {
+            SpawnerBlock block = new SpawnerBlock(blockToCopy);
+            _blocks.Add(block);
+            _spawnerToolEditor.Repaint();
+            return block;
         }
         
         void MoveBlock(Event e)
@@ -85,6 +96,46 @@ namespace SpawnerTool
                 {
                     RemoveSelectedBlock();
                 }
+
+                if (e.keyCode == KeyCode.LeftControl)
+                {
+                    _pressedControl = true;
+                }
+
+                if (_pressedControl)
+                {
+                    if (e.keyCode == KeyCode.C)
+                    {
+                        if (_selectedBlock != null)
+                        {
+                            _copyPasting = true;
+                            _copyPasteBlock = _selectedBlock;
+                        }
+                            
+                        
+                    }
+                }
+
+                if (_pressedControl)
+                {
+                    if (e.keyCode == KeyCode.V)
+                    {
+                        if (_copyPasting)
+                        {
+                            SpawnerBlock newBlock = DuplicateBlock(_copyPasteBlock);
+                            Select(newBlock);
+                            MoveBlock(e);  
+                        }
+                    }
+                }
+            }
+            
+            if (e.type == EventType.KeyUp)
+            {
+                if (e.keyCode == KeyCode.LeftControl)
+                {
+                    _pressedControl = false;
+                }
             }
             
             if (_movingBlock)
@@ -102,7 +153,7 @@ namespace SpawnerTool
 
                 if (e.type == EventType.MouseUp)
                 {
-                    if (!_spawnerToolEditor.PlayGround.IsPositionInsidePlayground(e.mousePosition))
+                    if (!_spawnerToolEditor.PlayGround.IsPositionInsidePlayground(_spawnerToolEditor.PlayGround.GetMousePositionInsidePlayground(e.mousePosition)))
                     {
                         RemoveSelectedBlock();
                     }
@@ -116,8 +167,6 @@ namespace SpawnerTool
                 }
             }
             
-           
-
             if (e.type == EventType.MouseDown)
             {
                 bool selected = false;
@@ -138,6 +187,34 @@ namespace SpawnerTool
                 if(selected == false && _movingBlock == false && _spawnerToolEditor.PlayGround.IsPositionInsidePlayground(e.mousePosition))
                     UnSelect();
             }
+            
+            if(e.type == EventType.KeyDown)
+            {
+                if (e.keyCode == KeyCode.LeftAlt)
+                {
+                    _wantsToClone = true;
+                }
+            }
+            
+            if (e.type == EventType.KeyUp)
+            {
+                if (e.keyCode == KeyCode.LeftAlt)
+                {
+                    _wantsToClone = false;
+                }
+            }
+
+            if (e.type == EventType.MouseDown && _wantsToClone)
+            {
+                if (_selectedBlock != null)
+                {
+                    if (_selectedBlock.Contains(
+                        _spawnerToolEditor.PlayGround.GetMousePositionInsidePlayground(e.mousePosition)))
+                    {
+                        Select(DuplicateBlock(_selectedBlock));
+                    }
+                }
+            }
         }
         
         public void Update()
@@ -148,11 +225,21 @@ namespace SpawnerTool
                 _selectedBlock.UpdateTime(_spawnerToolEditor.Inspector.InspectorWindow.spawnEnemyData.timeToStartSpawning);
                 _selectedBlock.UpdateSize();
             }
-            
+
             foreach (var block in _blocks)
             {
                 block.spawnEnemyData.enemyType = _spawnerToolEditor.Inspector.InspectorWindow.CheckEnemyName(block.spawnEnemyData.enemyType);
                 block.SetColor(ProjectConfiguration.Instance.GetProjectSettings().GetEnemyColor(block.spawnEnemyData.enemyType));
+            }
+
+            for (int i = _blocks.Count-1; i >= 0; i--)
+            {
+                if (_blocks[i] == _selectedBlock && _movingBlock)
+                    continue;
+                /*if (!_spawnerToolEditor.PlayGround.IsPositionInsidePlayground(_blocks[i].GetPosition))
+                {
+                    RemoveBlock(_blocks[i]);
+                }*/
             }
         }
         
@@ -160,6 +247,7 @@ namespace SpawnerTool
         {
             if (_selectedBlock == null)
                 return;
+            
             if (_selectedBlock.spawnEnemyData.enemyType != _spawnerToolEditor.Inspector.InspectorWindow.spawnEnemyData.enemyType)
             {
                 ChangeColor(_selectedBlock, ProjectConfiguration.Instance.GetProjectSettings().GetEnemyColor(_spawnerToolEditor.Inspector.InspectorWindow.spawnEnemyData.enemyType));
@@ -175,13 +263,19 @@ namespace SpawnerTool
 
         public void OnDisable()
         {
+            _wantsToClone = false;
             UnSelect();
+        }
+
+        public void ExitsWindow()
+        {
+            _wantsToClone = false;
         }
 
         public void Draw()
         {
             for (int i = 0; i < _blocks.Count; i++)
-            {
+            {   
                 _blocks[i].Draw();
             }
         }
