@@ -182,11 +182,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25ea22c6eb22f4b4d92bd738453ecba1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FontSize: 41
-  FontColor: {r: 1, g: 0, b: 1, a: 1}
-  ShowAlways: 1
-  SphereRadius: 0.2
-  SphereColor: {r: 1, g: 0, b: 1, a: 1}
+  _showAlways: 1
+  _showSpawnNumbersAsGizmos: 1
+  _numbersFontSize: 30
+  _fontColor: {r: 1, g: 0, b: 1, a: 1}
+  _showSpawnPoints: 1
+  _sphereRadius: 0.2
+  _sphereColor: {r: 1, g: 0, b: 1, a: 1}
 --- !u!4 &695397626
 Transform:
   m_ObjectHideFlags: 0
