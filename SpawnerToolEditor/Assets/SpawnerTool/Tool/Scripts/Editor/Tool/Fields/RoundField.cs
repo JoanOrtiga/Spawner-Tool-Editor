@@ -41,9 +41,11 @@ namespace SpawnerTool
         private string _savedCurrentRoundString;
         private readonly string _controlName = "RoundField";
 
-        public RoundField(SpawnerToolEditor spawnerToolEditor)
+        public RoundField(SpawnerToolEditor spawnerToolEditor, int round)
         {
             _spawnerToolEditor = spawnerToolEditor;
+            _currentRoundString = round.ToString();
+            _lastRound = round;
         }
 
         public void Input(Event e)

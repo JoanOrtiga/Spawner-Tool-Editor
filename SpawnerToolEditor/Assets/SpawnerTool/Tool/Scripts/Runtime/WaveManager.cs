@@ -88,10 +88,13 @@ namespace SpawnerTool
                 Debug.LogWarning($"SPAWNERTOOL: Round: {_currentRound} not defined in Graph: {_currentGraph.name}.");
                 return;
             }
-
+            
+            _currentGraph.ResetGraphRoundState(_currentRound);
             _roundTimer = new Timer(_currentGraph.GetAllRounds()[_currentRound].totalRoundTime);
             _roundTimer.OnTimerEnd += WhenRoundEnds;
             IsRoundActive = true;
+            
+            UpdateSpawners();
         }
 
         private void Update()
@@ -100,18 +103,27 @@ namespace SpawnerTool
                 return;
 
             _roundTimer.Tick(Time.deltaTime);
-
+            
             UpdateSpawners();
         }
 
         private void GetNewEnemies()
         {
-            SpawnEnemyData sp = _currentGraph.GetSpawnEnemyDataByTime(_currentRound, _roundTimer.GetCountUpTimer());
+            SpawnEnemyData sp;
+            float time;
+            
+            if (_roundTimer == null)
+                time = _currentGraph.GetAllRounds()[_currentRound].totalRoundTime;
+            else
+                time = _roundTimer.GetCountUpTimer();
+
+            sp = _currentGraph.GetSpawnEnemyDataByTime(_currentRound, time);
+
             if (sp == null)
                 return;
-
+            
             _enemySpawners.Add(new EnemySpawner(sp));
-            _enemySpawners[_enemySpawners.Count].OnSpawnEnemy += SpawnEnemy;
+            _enemySpawners[_enemySpawners.Count-1].OnSpawnEnemy += SpawnEnemy;
         }
 
         private void UpdateSpawners()

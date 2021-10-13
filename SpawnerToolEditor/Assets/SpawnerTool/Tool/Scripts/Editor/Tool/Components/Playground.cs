@@ -30,7 +30,12 @@ namespace SpawnerTool
         [SerializeField] private float _height = 500;
         public float Height => _height;
 
-        public bool GridMagnet { get; set; } = true;
+        [SerializeField] private bool _gridMagnet = true;
+        public bool GridMagnet
+        {
+            get => _gridMagnet;
+            set => _gridMagnet = value;
+        }
         
         public Playground(SpawnerToolEditor spawnerToolEditor)
         {

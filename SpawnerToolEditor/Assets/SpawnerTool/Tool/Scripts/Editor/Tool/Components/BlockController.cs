@@ -7,7 +7,7 @@ namespace SpawnerTool
     [Serializable]
     public class BlockController
     {
-        private SpawnerToolEditor _spawnerToolEditor;
+        [SerializeField] private SpawnerToolEditor _spawnerToolEditor;
         
         [SerializeField] private List<SpawnerBlock> _blocks;
         public List<SpawnerBlock> Blocks => _blocks;
@@ -247,7 +247,7 @@ namespace SpawnerTool
         {
             if (_selectedBlock == null)
                 return;
-            
+
             if (_selectedBlock.spawnEnemyData.enemyType != _spawnerToolEditor.Inspector.InspectorWindow.spawnEnemyData.enemyType)
             {
                 ChangeColor(_selectedBlock, ProjectConfiguration.Instance.GetProjectSettings().GetEnemyColor(_spawnerToolEditor.Inspector.InspectorWindow.spawnEnemyData.enemyType));

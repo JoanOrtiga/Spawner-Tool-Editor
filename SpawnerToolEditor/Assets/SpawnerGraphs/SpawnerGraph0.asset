@@ -13,20 +13,15 @@ MonoBehaviour:
   m_Name: SpawnerGraph0
   m_EditorClassIdentifier: 
   _rounds:
-  - spawningEnemiesData: []
-    totalRoundTime: 25
-    totalTracks: 5
-  - spawningEnemiesData: []
-    totalRoundTime: 25
-    totalTracks: 5
-  - spawningEnemiesData: []
-    totalRoundTime: 25
-    totalTracks: 5
-  - spawningEnemiesData: []
-    totalRoundTime: 25
-    totalTracks: 5
-  - spawningEnemiesData: []
-    totalRoundTime: 25
+  - spawningEnemiesData:
+    - enemyType: High
+      spawnPointID: 1
+      howManyEnemies: 10
+      timeToStartSpawning: 0
+      timeBetweenSpawn: 1
+      IsAlreadySpawned: 1
+      currentTrack: 0
+    totalRoundTime: 5
     totalTracks: 5
   - spawningEnemiesData: []
     totalRoundTime: 25

@@ -12,14 +12,15 @@ namespace SpawnerTool
         private Rect _tracksTitle = new Rect(160, 10, 77, 15);
         private Rect _tracksTextField = new Rect(155, 30, 70, 20);
 
-        private string _tracksString;
+        private string _tracksString = "5";
         private string _savedTracks;
         private readonly string _controlName = "TracksField";
 
-        public TracksField(SpawnerToolEditor spawnerToolEditor)
+        public TracksField(SpawnerToolEditor spawnerToolEditor, int roundTracks)
         {
             _spawnerToolEditor = spawnerToolEditor;
-            _tracksString = "5";
+            _tracksString = roundTracks.ToString();
+            _savedTracks = _tracksString;
         }
 
         public void Input(Event e)

@@ -16,7 +16,14 @@ namespace SpawnerTool
 
         public override void OnInspectorGUI()
         {
-            _projectSettings = EditorGUILayout.ObjectField(new GUIContent("Project Settings"), _projectSettings, typeof(ProjectSettings), true) as ProjectSettings;
+            serializedObject.Update();
+            SerializedProperty property = serializedObject.FindProperty("_projectSettings");
+            EditorGUILayout.ObjectField(property, typeof(ProjectSettings),new GUIContent("Project Settings"));
+            //_projectSettings = EditorGUILayout.ObjectField(new GUIContent("Project Settings"), _projectSettings, typeof(ProjectSettings), true) as ProjectSettings;
+
+            _projectSettings = property.objectReferenceValue as ProjectSettings;
+
+            serializedObject.ApplyModifiedProperties();
 
             EditorGUILayout.Space(10);
             GUIStyle title = new GUIStyle(GUI.skin.label)
@@ -31,7 +38,17 @@ namespace SpawnerTool
                 {
                     if (_enemyFactory.GetIdToPrefab().ContainsKey(enemyName))
                     {
+                        GameObject checkDiff = _enemyFactory.GetIdToPrefab()[enemyName];
+                        
                         _enemyFactory.GetIdToPrefab()[enemyName] = EditorGUILayout.ObjectField(new GUIContent(enemyName), _enemyFactory.GetIdToPrefab()[enemyName], typeof(GameObject),true) as GameObject;
+
+                        if (checkDiff != _enemyFactory.GetIdToPrefab()[enemyName])
+                        {
+                            _enemyFactory.SaveToList();
+                           /* EditorUtility.SetDirty(_enemyFactory);
+                            AssetDatabase.SaveAssetIfDirty(_enemyFactory);*/
+                        }
+                        
                         Repaint();
                     }
                     else

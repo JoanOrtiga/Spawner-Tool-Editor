@@ -7,11 +7,22 @@ namespace SpawnerTool
     [Serializable]
     public class SpawnerToolInspector
     {
-        private SpawnerToolEditor _spawnerToolEditor;
+        [SerializeField] private SpawnerToolEditor _spawnerToolEditor;
         [SerializeField] private SpawnerToolInspectorData _inspectorData;
         [SerializeField] private SpawnerToolInspectorData _inspectorWindow;
-        public SpawnerToolInspectorData InspectorWindow => _inspectorWindow;
-        
+        public SpawnerToolInspectorData InspectorWindow
+        {
+            get
+            {
+                if (_inspectorWindow == null)
+                {
+                    CreateInspectorWindow();
+                }
+                
+                return _inspectorWindow;
+            }
+        }
+
         public SpawnerToolInspector(SpawnerToolEditor spawnerToolEditor)
         {
             _spawnerToolEditor = spawnerToolEditor;

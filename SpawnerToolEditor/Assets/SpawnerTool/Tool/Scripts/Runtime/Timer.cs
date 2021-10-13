@@ -1,11 +1,13 @@
 ﻿using System;
+using UnityEngine;
 
 namespace SpawnerTool
 {
+    [Serializable]
     public class Timer
     {
-        private float _timer;
-        private float _maxDuration;
+        [SerializeField] private float _timer;
+        [SerializeField] private float _maxDuration;
         public event Action OnTimerEnd;
 
         public Timer(float duration)

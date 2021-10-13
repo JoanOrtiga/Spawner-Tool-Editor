@@ -6,6 +6,7 @@ namespace SpawnerTool
 {
     [InitializeOnLoad]
     [CreateAssetMenu(fileName = "ProjectConfiguration", menuName = "SpawnerTool/Settings/ProjectConfiguration")]
+    [HelpURL("https://joanorba.gitbook.io/spawnertool-editor/getting-started/first-steps")]
     public class ProjectConfiguration : ScriptableObject
     {
         [SerializeField] private ProjectSettings _projectSettings;

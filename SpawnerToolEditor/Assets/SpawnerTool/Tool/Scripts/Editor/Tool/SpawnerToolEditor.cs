@@ -80,7 +80,7 @@ namespace SpawnerTool
 
         #region WindowOpening
 
-        [MenuItem("SpawnerTool/Spawner")]
+        [MenuItem("SpawnerTool/SpawnerTool", priority = 0)]
         public static void ShowWindow()
         {
             InitializeWindow();
@@ -190,9 +190,9 @@ namespace SpawnerTool
 
         private void CreateFields()
         {
-            _roundField = new RoundField(this);
-            _roundTotalTimeField = new RoundTotalTimeField(this);
-            _tracksField = new TracksField(this);
+            _roundField = new RoundField(this, _currentRound);
+            _roundTotalTimeField = new RoundTotalTimeField(this, _roundTotalTime);
+            _tracksField = new TracksField(this, _roundTracks);
             _gridMagnetField = new GridMagnetField(this);
             _defaultEnemyBlock = new DefaultEnemyBlock(this);
             _binField = new BinField(this);
@@ -214,6 +214,13 @@ namespace SpawnerTool
 
             Inspector.OnDisable();
             _blockController.OnDisable();
+            _graphController.OnDisable();
+        }
+        
+        
+        private void OnDestroy()
+        {
+            OnDisable();
         }
         
         private void OnGUI()
@@ -293,7 +300,8 @@ namespace SpawnerTool
         {
             if (Selection.activeObject as SpawnerGraph != null)
             { 
-                _graphController.SaveRound(_currentRound);
+                if(!_graphController.IsGraphNull())
+                    _graphController.SaveRound(_currentRound);
                 _graphController.ChangeGraph(Selection.activeObject as SpawnerGraph);
                 Repaint();
             }

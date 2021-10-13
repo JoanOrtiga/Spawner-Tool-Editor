@@ -33,7 +33,6 @@ namespace SpawnerTool
             {
                 SaveRound(_spawnerToolEditor.CurrentRound);
             }
-            
             _currentGraph = newGraph;
             LoadRound(_spawnerToolEditor.CurrentRound);
         }
@@ -56,7 +55,7 @@ namespace SpawnerTool
             {
                 _currentGraph.GetAllRounds().Add(new Round());
             }
-
+            
             Round savedRound = new Round(new List<SpawnEnemyData>(), _spawnerToolEditor.RoundTotalTime, _spawnerToolEditor.RoundTracks);
 
             foreach (SpawnerBlock block in _spawnerToolEditor.SpawnerBlockController.Blocks)
@@ -77,9 +76,10 @@ namespace SpawnerTool
                 return;
             }
 
-            if (_currentGraph.GetAllRounds() == null)
+            var allRounds = _currentGraph.GetAllRounds();
+            
+            if (allRounds == null)
             {
-                var allRounds = _currentGraph.GetAllRounds();
                 allRounds = new List<Round>();
             }
             
@@ -87,7 +87,7 @@ namespace SpawnerTool
             {
                 _currentGraph.GetAllRounds().Add(new Round(new List<SpawnEnemyData>(), _spawnerToolEditor.EditorSettings.DefaultTotalTime, _spawnerToolEditor.EditorSettings.DefaultTracks));
             }
-            
+
             //Second, if round exists, we load its settings.
 
             _spawnerToolEditor.RoundTracks = _currentGraph.GetAllRounds()[round].totalTracks;
@@ -179,6 +179,13 @@ namespace SpawnerTool
                 return _currentGraph.name;
 
             return "No graph";
+        }
+
+        public void OnDisable()
+        {
+            SaveRound(_spawnerToolEditor.CurrentRound);
+            EditorUtility.SetDirty(_currentGraph);
+            AssetDatabase.SaveAssetIfDirty(_currentGraph);
         }
     }
 }

@@ -19,10 +19,10 @@ namespace SpawnerTool
         {
             foreach (var enemyData in _rounds[round].spawningEnemiesData)
             {
-                if(enemyData.IsAlreadySpawned)
+                if (enemyData.IsAlreadySpawned)
                     continue;
-                
-                if (enemyData.timeToStartSpawning < time)
+
+                if (enemyData.timeToStartSpawning >= time)
                 {
                     enemyData.IsAlreadySpawned = true;
                     return enemyData;
@@ -40,6 +40,14 @@ namespace SpawnerTool
                 {
                     enemyData.IsAlreadySpawned = false;
                 }
+            }
+        }
+
+        public void ResetGraphRoundState(int round)
+        {
+            foreach (var enemyData in _rounds[round].spawningEnemiesData)
+            {
+                enemyData.IsAlreadySpawned = false;
             }
         }
     }

@@ -13,10 +13,8 @@ namespace SpawnerTool
 #if UNITY_EDITOR
         public static void DrawString(string text, Vector3 worldPos, Color color, int fontSize = 20, float oX = 0, float oY = 0)
         {
-
             UnityEditor.Handles.BeginGUI();
-        
-        
+            
             var view = UnityEditor.SceneView.currentDrawingSceneView;
             Vector3 screenPos = view.camera.WorldToScreenPoint(worldPos);
 
@@ -30,10 +28,8 @@ namespace SpawnerTool
             GUIStyle style = new GUIStyle();
             style.fontSize = fontSize;
             style.normal.textColor = color;
-        
-
+            
             UnityEditor.Handles.Label(TransformByPixel(worldPos, oX, oY), text, style);
-        
             UnityEditor.Handles.EndGUI();
         }
 

@@ -18,9 +18,11 @@ namespace SpawnerTool
 
         private readonly string _controlName = "RoundTotalTime";
 
-        public RoundTotalTimeField(SpawnerToolEditor spawnerToolEditor)
+        public RoundTotalTimeField(SpawnerToolEditor spawnerToolEditor, float roundTotalTime)
         {
             _spawnerToolEditor = spawnerToolEditor;
+            _roundTotalTimeString = roundTotalTime.ToString();
+            _savedRoundTotalTimeString = _roundTotalTimeString;
         }
 
         public void Input(Event e)
