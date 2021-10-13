@@ -5,8 +5,19 @@ namespace SpawnerTool
     [System.Serializable]
     public class Round
     {
-        public List<SpawnEnemyData> spawningEnemiesData;
-        public float totalRoundTime;
+        private List<SpawnEnemyData> _spawningEnemiesData;
+        public List<SpawnEnemyData> SpawningEnemiesData
+        {
+            get => _spawningEnemiesData;
+            set => _spawningEnemiesData = value;
+        }
+        
+        private float _totalRoundTime;
+        public float TotalRoundTime
+        {
+            get => _totalRoundTime;
+            set => _totalRoundTime = value;
+        }
 
         //Tool editor
         public int totalTracks;
@@ -16,18 +27,18 @@ namespace SpawnerTool
         {
             if (spawningEnemies == null)
             {
-                this.spawningEnemiesData = new List<SpawnEnemyData>();
+                this.SpawningEnemiesData = new List<SpawnEnemyData>();
             }
             else
-                this.spawningEnemiesData = spawningEnemies;
+                this.SpawningEnemiesData = spawningEnemies;
 
-            this.totalRoundTime = totalRoundTime;
+            this.TotalRoundTime = totalRoundTime;
             this.totalTracks = totalTracks;
         }
 
-        public void InitializeSpawningEnemies(List<SpawnEnemyData> spawningEnemies)
+        private void InitializeSpawningEnemies(List<SpawnEnemyData> spawningEnemies)
         {
-            this.spawningEnemiesData = spawningEnemies;
+            _spawningEnemiesData = spawningEnemies;
         }
     }
 }

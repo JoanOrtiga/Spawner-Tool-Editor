@@ -90,7 +90,7 @@ namespace SpawnerTool
             }
             
             _currentGraph.ResetGraphRoundState(_currentRound);
-            _roundTimer = new Timer(_currentGraph.GetAllRounds()[_currentRound].totalRoundTime);
+            _roundTimer = new Timer(_currentGraph.GetAllRounds()[_currentRound].TotalRoundTime);
             _roundTimer.OnTimerEnd += WhenRoundEnds;
             IsRoundActive = true;
             
@@ -113,7 +113,7 @@ namespace SpawnerTool
             float time;
             
             if (_roundTimer == null)
-                time = _currentGraph.GetAllRounds()[_currentRound].totalRoundTime;
+                time = _currentGraph.GetAllRounds()[_currentRound].TotalRoundTime;
             else
                 time = _roundTimer.GetCountUpTimer();
 

@@ -29,8 +29,8 @@ namespace SpawnerTool
                 return;
 
             //Create a new enemy.
-            OnSpawnEnemy?.Invoke(_spawnEnemyData.enemyType, _spawnEnemyData.spawnPointID);
-            _timer = new Timer(_spawnEnemyData.timeBetweenSpawn);
+            OnSpawnEnemy?.Invoke(_spawnEnemyData.EnemyType, _spawnEnemyData.SpawnPointID);
+            _timer = new Timer(_spawnEnemyData.TimeBetweenSpawn);
             _timer.OnTimerEnd += NextEnemy;
 
             //Update spawner enemies quantity.
@@ -61,7 +61,7 @@ namespace SpawnerTool
         /// <returns></returns>
         public bool SpawnerFinished()
         {
-            return _enemiesToSpawn >= _spawnEnemyData.howManyEnemies;
+            return _enemiesToSpawn >= _spawnEnemyData.HowManyEnemies;
         }
     }
 }

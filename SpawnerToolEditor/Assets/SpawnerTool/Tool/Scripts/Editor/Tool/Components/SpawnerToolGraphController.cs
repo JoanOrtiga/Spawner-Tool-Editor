@@ -60,7 +60,7 @@ namespace SpawnerTool
 
             foreach (SpawnerBlock block in _spawnerToolEditor.SpawnerBlockController.Blocks)
             {
-                savedRound.spawningEnemiesData.Add(block.spawnEnemyData);
+                savedRound.SpawningEnemiesData.Add(block.spawnEnemyData);
             }
             
             _currentGraph.GetAllRounds()[round] = savedRound;
@@ -92,22 +92,22 @@ namespace SpawnerTool
 
             _spawnerToolEditor.RoundTracks = _currentGraph.GetAllRounds()[round].totalTracks;
             _spawnerToolEditor.GetTracksField.ChangeTracks(_spawnerToolEditor.RoundTracks);
-            _spawnerToolEditor.RoundTotalTime = _currentGraph.GetAllRounds()[round].totalRoundTime;
+            _spawnerToolEditor.RoundTotalTime = _currentGraph.GetAllRounds()[round].TotalRoundTime;
             _spawnerToolEditor.GetRoundTotalTimeField.ChangeTotalTime(_spawnerToolEditor.RoundTotalTime);
 
             //Lastly, we create blocks for each enemies data.
-            foreach (var enemySpawnData in _currentGraph.GetAllRounds()[round].spawningEnemiesData)
+            foreach (var enemySpawnData in _currentGraph.GetAllRounds()[round].SpawningEnemiesData)
             {
                 float cellXPercentatge = SpawnerToolEditor.CellXPercentatge;
                 Vector2 cellSize = SpawnerToolEditor.CellSize;
                 
                 Rect newBlockRect = new Rect
                 {
-                    x = enemySpawnData.timeToStartSpawning * cellXPercentatge * cellSize.x,
-                    y = enemySpawnData.currentTrack * cellSize.y,
+                    x = enemySpawnData.TimeToStartSpawning * cellXPercentatge * cellSize.x,
+                    y = enemySpawnData.CurrentTrack * cellSize.y,
                     
                     width = cellSize.x * cellXPercentatge *
-                            (enemySpawnData.howManyEnemies * enemySpawnData.timeBetweenSpawn),
+                            (enemySpawnData.HowManyEnemies * enemySpawnData.TimeBetweenSpawn),
                     height = cellSize.x
                 };
                 

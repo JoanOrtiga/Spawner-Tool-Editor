@@ -7,12 +7,12 @@ namespace SpawnerTool
 {
     public static class SpawnerToolEditorUtility
     {
-        public static void ValidateValue(ref float value, float minValue)
+        public static void ValidateValue(float value, float minValue)
         {
             value = Mathf.Max(value, minValue);
         }
 
-        public static void ValidateValue(ref int value, int minValue)
+        public static void ValidateValue(int value, int minValue)
         {
             value = Mathf.Max(value, minValue);
         }

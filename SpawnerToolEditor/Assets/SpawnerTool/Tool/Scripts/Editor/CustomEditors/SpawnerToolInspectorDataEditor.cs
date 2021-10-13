@@ -23,10 +23,10 @@ namespace SpawnerTool
             if (_sp == null)
                 return;
 
-            SpawnerToolEditorUtility.ValidateValue(ref _sp.spawnEnemyData.howManyEnemies, 1);
-            SpawnerToolEditorUtility.ValidateValue(ref _sp.spawnEnemyData.spawnPointID, 0);
-            SpawnerToolEditorUtility.ValidateValue(ref _sp.spawnEnemyData.timeBetweenSpawn, 0.01f);
-            SpawnerToolEditorUtility.ValidateValue(ref _sp.spawnEnemyData.timeToStartSpawning, 0.0f);
+            SpawnerToolEditorUtility.ValidateValue(_sp.spawnEnemyData.HowManyEnemies, 1);
+            SpawnerToolEditorUtility.ValidateValue(_sp.spawnEnemyData.SpawnPointID, 0);
+            SpawnerToolEditorUtility.ValidateValue(_sp.spawnEnemyData.TimeBetweenSpawn, 0.01f);
+            SpawnerToolEditorUtility.ValidateValue(_sp.spawnEnemyData.TimeToStartSpawning, 0.0f);
         }
 
         public override void OnInspectorGUI()
@@ -41,26 +41,26 @@ namespace SpawnerTool
             if (Event.current.type == EventType.Used || _sp.init)
             {
                 if(_sp.init)
-                    _sp.spawnEnemyData.enemyType = Unnamed;
+                    _sp.spawnEnemyData.EnemyType = Unnamed;
                 _sp.init = false;
                 
-                SpawnerToolEditorUtility.ValidateValue(ref _sp.spawnEnemyData.howManyEnemies, 1);
-                SpawnerToolEditorUtility.ValidateValue(ref _sp.spawnEnemyData.spawnPointID, 0);
-                SpawnerToolEditorUtility.ValidateValue(ref _sp.spawnEnemyData.timeBetweenSpawn, 0.01f);
-                SpawnerToolEditorUtility.ValidateValue(ref _sp.spawnEnemyData.timeToStartSpawning, 0.0f);
+                SpawnerToolEditorUtility.ValidateValue(_sp.spawnEnemyData.HowManyEnemies, 1);
+                SpawnerToolEditorUtility.ValidateValue(_sp.spawnEnemyData.SpawnPointID, 0);
+                SpawnerToolEditorUtility.ValidateValue(_sp.spawnEnemyData.TimeBetweenSpawn, 0.01f);
+                SpawnerToolEditorUtility.ValidateValue(_sp.spawnEnemyData.TimeToStartSpawning, 0.0f);
             }
         }
 
         private void DrawEnemyData()
         {
-            _sp.spawnEnemyData.spawnPointID = EditorGUILayout.IntField("Spawn point ID", _sp.spawnEnemyData.spawnPointID);
-            _sp.spawnEnemyData.howManyEnemies =
-                EditorGUILayout.IntField("How many enemies", _sp.spawnEnemyData.howManyEnemies);
+            _sp.spawnEnemyData.SpawnPointID = EditorGUILayout.IntField("Spawn point ID", _sp.spawnEnemyData.SpawnPointID);
+            _sp.spawnEnemyData.HowManyEnemies =
+                EditorGUILayout.IntField("How many enemies", _sp.spawnEnemyData.HowManyEnemies);
 
-            _sp.spawnEnemyData.timeBetweenSpawn =
-                EditorGUILayout.FloatField("Time between spawns", _sp.spawnEnemyData.timeBetweenSpawn);
-            _sp.spawnEnemyData.timeToStartSpawning =
-                EditorGUILayout.FloatField("Time to start Spawning", _sp.spawnEnemyData.timeToStartSpawning);
+            _sp.spawnEnemyData.TimeBetweenSpawn =
+                EditorGUILayout.FloatField("Time between spawns", _sp.spawnEnemyData.TimeBetweenSpawn);
+            _sp.spawnEnemyData.TimeToStartSpawning =
+                EditorGUILayout.FloatField("Time to start Spawning", _sp.spawnEnemyData.TimeToStartSpawning);
 
             List<string> enemyNames = new List<string>();
             enemyNames.Add("Not Defined");
@@ -79,7 +79,7 @@ namespace SpawnerTool
             {
                 enemyNames.Add(enemyName);
 
-                if (enemyName == _sp.spawnEnemyData.enemyType)
+                if (enemyName == _sp.spawnEnemyData.EnemyType)
                 {
                     _selected = enemyNames.IndexOf(enemyName);
                     x = true;
@@ -94,11 +94,11 @@ namespace SpawnerTool
 
                 if (_selected > 0)
                 {
-                    _sp.spawnEnemyData.enemyType = enemyNames[_selected];
+                    _sp.spawnEnemyData.EnemyType = enemyNames[_selected];
                 }
                 else
                 {
-                    _sp.spawnEnemyData.enemyType = Unnamed;
+                    _sp.spawnEnemyData.EnemyType = Unnamed;
                 }
             
         }

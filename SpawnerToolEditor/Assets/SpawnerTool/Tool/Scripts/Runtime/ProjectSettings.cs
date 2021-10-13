@@ -17,7 +17,7 @@ namespace SpawnerTool
         {
             if(!enemyColorByType.ContainsKey(enemyType)) 
                 return Color.white;
-            return enemyColorByType[enemyType];//
+            return enemyColorByType[enemyType];
         }
 
         public List<string> GetEnemyNames()

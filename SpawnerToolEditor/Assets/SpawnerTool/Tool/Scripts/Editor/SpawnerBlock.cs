@@ -44,7 +44,7 @@ namespace SpawnerTool
         public SpawnerBlock(SpawnerBlock block)
         {
             SpawnEnemyData sed = block.spawnEnemyData;
-            spawnEnemyData = new SpawnEnemyData(sed.spawnPointID, sed.timeToStartSpawning, sed.howManyEnemies, sed.enemyType, sed.timeBetweenSpawn);
+            spawnEnemyData = new SpawnEnemyData(sed.SpawnPointID, sed.TimeToStartSpawning, sed.HowManyEnemies, sed.EnemyType, sed.TimeBetweenSpawn);
             _rect = block._rect;
             _size = block._size;
             _color = block._color;
@@ -52,15 +52,15 @@ namespace SpawnerTool
 
         public void Update(Vector2 mouseDrag, float time, int track)
         {
-            spawnEnemyData.currentTrack = track;
-            spawnEnemyData.timeToStartSpawning =
+            spawnEnemyData.CurrentTrack = track;
+            spawnEnemyData.TimeToStartSpawning =
                 time / (SpawnerToolEditor.CellXPercentatge * SpawnerToolEditor.CellSize.x);
             _rect = new Rect(mouseDrag.x, mouseDrag.y, _size.x, _size.y);
         }
 
         public void UpdateTime(float time)
         {
-            spawnEnemyData.timeToStartSpawning = time;
+            spawnEnemyData.TimeToStartSpawning = time;
             _rect.x = time * (SpawnerToolEditor.CellXPercentatge * SpawnerToolEditor.CellSize.x);
         }
 
@@ -121,7 +121,7 @@ namespace SpawnerTool
             
             GUILayout.BeginArea(titleRect);
             {
-                GUILayout.Label(spawnEnemyData.enemyType, enemyTitle);
+                GUILayout.Label(spawnEnemyData.EnemyType, enemyTitle);
             }
             GUILayout.EndArea();
             
@@ -130,13 +130,13 @@ namespace SpawnerTool
             infoRect.width -= 3;
             infoRect.height -= 5;
 
-            if (spawnEnemyData.enemyType != SpawnerToolInspectorDataEditor.Unnamed)
+            if (spawnEnemyData.EnemyType != SpawnerToolInspectorDataEditor.Unnamed)
             {
                 GUILayout.BeginArea(infoRect);
                 {
-                    GUILayout.Label("Quantity: " + spawnEnemyData.howManyEnemies, enemyInfo);
-                    GUILayout.Label("Frequency: " + spawnEnemyData.timeBetweenSpawn + "s", enemyInfo);
-                    GUILayout.Label("SpawnID: " + spawnEnemyData.spawnPointID, enemyInfo);
+                    GUILayout.Label("Quantity: " + spawnEnemyData.HowManyEnemies, enemyInfo);
+                    GUILayout.Label("Frequency: " + spawnEnemyData.TimeBetweenSpawn + "s", enemyInfo);
+                    GUILayout.Label("SpawnID: " + spawnEnemyData.SpawnPointID, enemyInfo);
                 }
                 GUILayout.EndArea();
             }
@@ -161,7 +161,7 @@ namespace SpawnerTool
         public void UpdateSize()
         {
             _size.x = SpawnerToolEditor.CellSize.x * SpawnerToolEditor.CellXPercentatge *
-                      (spawnEnemyData.howManyEnemies * spawnEnemyData.timeBetweenSpawn);
+                      (spawnEnemyData.HowManyEnemies * spawnEnemyData.TimeBetweenSpawn);
             _size.x = Mathf.Max(_size.x, 20.0f);
 
             _size.y = 100f;

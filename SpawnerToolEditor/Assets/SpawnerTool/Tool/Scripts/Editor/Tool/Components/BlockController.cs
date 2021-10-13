@@ -222,14 +222,14 @@ namespace SpawnerTool
             if (_selectedBlock != null)
             {
                 SaveInspectorValues();
-                _selectedBlock.UpdateTime(_spawnerToolEditor.Inspector.InspectorWindow.spawnEnemyData.timeToStartSpawning);
+                _selectedBlock.UpdateTime(_spawnerToolEditor.Inspector.InspectorWindow.spawnEnemyData.TimeToStartSpawning);
                 _selectedBlock.UpdateSize();
             }
 
             foreach (var block in _blocks)
             {
-                block.spawnEnemyData.enemyType = _spawnerToolEditor.Inspector.InspectorWindow.CheckEnemyName(block.spawnEnemyData.enemyType);
-                block.SetColor(ProjectConfiguration.Instance.GetProjectSettings().GetEnemyColor(block.spawnEnemyData.enemyType));
+                block.spawnEnemyData.EnemyType = _spawnerToolEditor.Inspector.InspectorWindow.CheckEnemyName(block.spawnEnemyData.EnemyType);
+                block.SetColor(ProjectConfiguration.Instance.GetProjectSettings().GetEnemyColor(block.spawnEnemyData.EnemyType));
             }
 
             for (int i = _blocks.Count-1; i >= 0; i--)
@@ -248,9 +248,9 @@ namespace SpawnerTool
             if (_selectedBlock == null)
                 return;
 
-            if (_selectedBlock.spawnEnemyData.enemyType != _spawnerToolEditor.Inspector.InspectorWindow.spawnEnemyData.enemyType)
+            if (_selectedBlock.spawnEnemyData.EnemyType != _spawnerToolEditor.Inspector.InspectorWindow.spawnEnemyData.EnemyType)
             {
-                ChangeColor(_selectedBlock, ProjectConfiguration.Instance.GetProjectSettings().GetEnemyColor(_spawnerToolEditor.Inspector.InspectorWindow.spawnEnemyData.enemyType));
+                ChangeColor(_selectedBlock, ProjectConfiguration.Instance.GetProjectSettings().GetEnemyColor(_spawnerToolEditor.Inspector.InspectorWindow.spawnEnemyData.EnemyType));
             }
 
             _selectedBlock.spawnEnemyData = _spawnerToolEditor.Inspector.InspectorWindow.spawnEnemyData;
