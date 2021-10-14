@@ -18,6 +18,8 @@ namespace SpawnerTool
         private SerializedProperty _sphereRadius;
         private SerializedProperty _sphereColor;
 
+        [SerializeField] private string _rename = "SpawnID:";
+        
         private void OnEnable()
         {
             _spawnPointsIDManager = target as SpawnPointsIDManager;
@@ -51,6 +53,32 @@ namespace SpawnerTool
            }
            
            serializedObject.ApplyModifiedProperties();
+
+           EditorGUILayout.Space(20);
+           EditorGUILayout.LabelField("Renaming", new GUIStyle("label"){fontStyle = FontStyle.Bold, fontSize = 13});
+           _rename = EditorGUILayout.TextField("Rename (+ incremental)",_rename);
+           EditorGUILayout.LabelField("Your gameObjects will be renamed to:");
+           
+           EditorGUI.indentLevel++;
+           EditorGUI.indentLevel++;
+           EditorGUILayout.LabelField(_rename + " " + 0);
+           EditorGUILayout.LabelField(_rename + " " + 1);
+           EditorGUI.indentLevel--;
+           EditorGUI.indentLevel--;
+
+           if (GUILayout.Button("Rename child objects"))
+           {
+               RenameChildObjects();
+           }
+        }
+
+        public void RenameChildObjects()
+        {
+            
+            for (int i = 0; i < _spawnPointsIDManager.transform.childCount; i++)
+            {
+                _spawnPointsIDManager.transform.GetChild(i).name = _rename + " " + i;
+            }
         }
     }
 }

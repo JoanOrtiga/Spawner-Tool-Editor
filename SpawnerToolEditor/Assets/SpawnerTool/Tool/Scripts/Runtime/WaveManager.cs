@@ -34,6 +34,13 @@ namespace SpawnerTool.Runtime
                                  "Otherwise, you must call StartRound method to start spawning.")]
         private bool _startSpawningOnAwake = true;
 
+        [SerializeField, Tooltip("If true, new round will start after Delay Between Rounds time." +
+                                 "If false, you must call StartRound method again to start spawning")]
+        private bool _startNewRoundAutomatically = true;
+
+        [SerializeField, Tooltip("Delay in seconds between last round and new round.")]
+        private float _delayBetweenRounds = 7f;
+
         [Space]
         [Header("Events")]
         //
@@ -165,7 +172,21 @@ namespace SpawnerTool.Runtime
             if (_currentGraph.GetAllRounds().Count == _currentRound + 1)
             {
                 OnAllRoundsFinished?.Invoke();
+                return;
             }
+
+            if (_startNewRoundAutomatically)
+            {
+                _roundTimer = new Timer(_delayBetweenRounds);
+                _roundTimer.OnTimerEnd += StartNextRoundAutomatically;
+            }
+        }
+
+        private void StartNextRoundAutomatically()
+        {
+            _roundTimer.OnTimerEnd -= StartNextRoundAutomatically;
+            _roundTimer = null;
+            StartRound();
         }
 
         /// <summary>

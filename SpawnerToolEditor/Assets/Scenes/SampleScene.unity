@@ -133,7 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 214079026}
   m_Layer: 0
-  m_Name: GameObject (5)
+  m_Name: 'SpawnID: 5'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -185,10 +185,10 @@ MonoBehaviour:
   _showAlways: 1
   _showSpawnNumbersAsGizmos: 1
   _numbersFontSize: 30
-  _fontColor: {r: 1, g: 0, b: 1, a: 1}
+  _fontColor: {r: 1, g: 0.9153609, b: 0, a: 1}
   _showSpawnPoints: 1
   _sphereRadius: 0.2
-  _sphereColor: {r: 1, g: 0, b: 1, a: 1}
+  _sphereColor: {r: 1, g: 0, b: 0.09661579, a: 1}
 --- !u!4 &695397626
 Transform:
   m_ObjectHideFlags: 0
@@ -313,7 +313,7 @@ GameObject:
   m_Component:
   - component: {fileID: 766541687}
   m_Layer: 0
-  m_Name: GameObject (6)
+  m_Name: 'SpawnID: 6'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -343,7 +343,7 @@ GameObject:
   m_Component:
   - component: {fileID: 837536364}
   m_Layer: 0
-  m_Name: GameObject (1)
+  m_Name: 'SpawnID: 1'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -522,7 +522,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1491476744}
   m_Layer: 0
-  m_Name: GameObject (3)
+  m_Name: 'SpawnID: 3'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -552,7 +552,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1515355930}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: 'SpawnID: 0'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -582,7 +582,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1565955758}
   m_Layer: 0
-  m_Name: GameObject (2)
+  m_Name: 'SpawnID: 2'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -636,6 +636,8 @@ MonoBehaviour:
   _enemyFactory: {fileID: 11400000, guid: 0efbdd63023103245b24921fadb1a7ac, type: 2}
   _parentToSpawnEnemies: {fileID: 0}
   _startSpawningOnAwake: 1
+  _startNewRoundAutomatically: 0
+  _delayBetweenRounds: 0
   OnRoundFinished:
     m_PersistentCalls:
       m_Calls: []
@@ -671,7 +673,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1981399739}
   m_Layer: 0
-  m_Name: GameObject (4)
+  m_Name: 'SpawnID: 4'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
