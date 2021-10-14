@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using SpawnerTool.Data;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace SpawnerTool
+namespace SpawnerTool.Runtime
 {
+    [HelpURL("https://joanorba.gitbook.io/spawnertool/v/api/runtime/wavemanager")]
     public class WaveManager : MonoBehaviour
     {
         [Header("Mandatory references")]
@@ -41,7 +43,7 @@ namespace SpawnerTool
         [Tooltip("When all rounds of the graph have been spawned.")]
         public UnityEvent OnAllRoundsFinished;
 
-        [Tooltip("Raised when spawns enemy. It has the GameObject reference")]
+        [Tooltip("Raised when spawns enemy. It has the enemy GameObject reference")]
         public UnityEvent<GameObject> OnEnemySpawn;
 
         [Space]
@@ -58,12 +60,22 @@ namespace SpawnerTool
         private int _currentRound = 0;
         private List<EnemySpawner> _enemySpawners = new List<EnemySpawner>();
 
+        /// <summary>
+        /// Is round currently spawning enemies?
+        /// </summary>
         public bool IsRoundActive { get; private set; } = false;
 
-        public SpawnerGraph SpawnerGraph
+        /// <summary>
+        /// Change actual graph. It can only be changed if round is not active.
+        /// </summary>
+        public SpawnerGraph CurrentSpawnerGraph
         {
             get { return _currentGraph; }
-            set { _currentGraph = value; }
+            set 
+            { 
+                if(!IsRoundActive)
+                    _currentGraph = value; 
+            }
         }
 
         private void Awake()
@@ -134,7 +146,7 @@ namespace SpawnerTool
             {
                 _enemySpawners[i].Tick(Time.deltaTime);
 
-                if (_enemySpawners[i].SpawnerFinished())
+                if (_enemySpawners[i].IsSpawnerFinished())
                 {
                     _enemySpawners[i].OnSpawnEnemy -= SpawnEnemy;
                     _enemySpawners.RemoveAt(i);

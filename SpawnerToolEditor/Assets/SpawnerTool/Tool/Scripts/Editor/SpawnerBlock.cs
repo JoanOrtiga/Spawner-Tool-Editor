@@ -1,4 +1,5 @@
 ﻿using System;
+using SpawnerTool.Data;
 using UnityEditor;
 using UnityEngine;
 

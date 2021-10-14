@@ -1,15 +1,29 @@
 ﻿using System;
 using UnityEngine;
 
-namespace SpawnerTool
+namespace SpawnerTool.Runtime
 {
+    [HelpURL("https://joanorba.gitbook.io/spawnertool/v/api/runtime/timer")]
     [Serializable]
     public class Timer
     {
         [SerializeField] private float _timer;
         [SerializeField] private float _maxDuration;
-        public event Action OnTimerEnd;
+        private event Action _onTimerEnd;
 
+        /// <summary>
+        /// When timer ends event is raised
+        /// </summary>
+        public Action OnTimerEnd
+        {
+            get => _onTimerEnd;
+            set => _onTimerEnd = value;
+        }
+
+        /// <summary>
+        /// Constructor of the timer
+        /// </summary>
+        /// <param name="duration">The length in seconds of the timer</param>
         public Timer(float duration)
         {
             _timer = duration;

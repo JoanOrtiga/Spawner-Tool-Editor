@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
-namespace SpawnerTool
+namespace SpawnerTool.Data
 {
+    [HelpURL("https://joanorba.gitbook.io/spawnertool/v/api/data/round")]
     [System.Serializable]
     public class Round
     {

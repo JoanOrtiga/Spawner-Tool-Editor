@@ -1,0 +1,16 @@
+{
+    "name": "SpawnerTool.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:b322406195172d14cb46226022a44030"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

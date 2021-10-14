@@ -1,19 +1,30 @@
 ﻿using System;
+using SpawnerTool.Data;
 using UnityEngine;
 
-namespace SpawnerTool
+namespace SpawnerTool.Runtime
 {
+    [HelpURL("https://joanorba.gitbook.io/spawnertool/v/api/runtime/enemyspawner")]
     public class EnemySpawner
     {
         private SpawnEnemyData _spawnEnemyData;
         private Timer _timer;
         private int _enemiesToSpawn;
+        private event Action<string, int> _onSpawnEnemy;
+
+        /// <summary>
+        /// When enemy spawns | string = EnemyType, int = SpawnPointID
+        /// </summary>
+        public Action<string, int> OnSpawnEnemy
+        {
+            get => _onSpawnEnemy;
+            set => _onSpawnEnemy = value;
+        }
         
         /// <summary>
-        /// string = EnemyType, int = SpawnPointID
+        /// Constructor of EnemySpawner
         /// </summary>
-        public event Action<string, int> OnSpawnEnemy; 
-        
+        /// <param name="spawnEnemyData">SpawnEnemyData information in order to proceed with spawns.</param>
         public EnemySpawner(SpawnEnemyData spawnEnemyData)
         {
             _spawnEnemyData = spawnEnemyData;
@@ -25,7 +36,7 @@ namespace SpawnerTool
         private void SpawnEnemy()
         {
             //Check if more enemies to spawn.
-            if (SpawnerFinished())
+            if (IsSpawnerFinished())
                 return;
 
             //Create a new enemy.
@@ -59,7 +70,7 @@ namespace SpawnerTool
         /// Returns whether spawner has already spawned all enemies.
         /// </summary>
         /// <returns></returns>
-        public bool SpawnerFinished()
+        public bool IsSpawnerFinished()
         {
             return _enemiesToSpawn >= _spawnEnemyData.HowManyEnemies;
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SpawnerTool.Data;
 using UnityEditor;
 using UnityEngine;
 

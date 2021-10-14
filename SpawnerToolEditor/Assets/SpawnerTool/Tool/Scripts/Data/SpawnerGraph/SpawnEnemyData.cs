@@ -1,5 +1,8 @@
-﻿namespace SpawnerTool
+﻿using UnityEngine;
+
+namespace SpawnerTool.Data
 {
+    [HelpURL("https://joanorba.gitbook.io/spawnertool/v/api/data/spawnenemydata")]
     [System.Serializable]
     public class SpawnEnemyData
     {

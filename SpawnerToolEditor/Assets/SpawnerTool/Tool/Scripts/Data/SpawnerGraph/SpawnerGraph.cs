@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SpawnerTool
+namespace SpawnerTool.Data
 {
+    [HelpURL("https://joanorba.gitbook.io/spawnertool/v/api/data/spawnergraph")]
     [CreateAssetMenu(fileName = "RoundsData", menuName = "SpawnerTool/SpawnerGraph", order = -5)]
     public class SpawnerGraph : ScriptableObject
     {

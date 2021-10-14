@@ -1,13 +1,13 @@
 using UnityEngine;
 
-namespace SpawnerTool
+namespace SpawnerTool.EditorScripts
 {
     [CreateAssetMenu(fileName = "README", menuName = "SpawnerTool/Settings/Readme/SimpleReadme", order = 3000)]
     public class SimpleReadme : ScriptableObject
     {
-        [SerializeField] private string _title;
-        [SerializeField] private string _description;
-        [SerializeField] private Texture2D _icon;
+        public string Title;
+        public string Description;
+        public Texture2D Icon;
     }    
 }
 

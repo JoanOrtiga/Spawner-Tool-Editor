@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using SpawnerTool.Data;
+using UnityEditor;
 using UnityEngine;
 
 namespace SpawnerTool

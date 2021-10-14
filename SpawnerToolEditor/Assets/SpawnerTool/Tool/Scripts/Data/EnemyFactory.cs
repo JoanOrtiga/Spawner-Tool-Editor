@@ -2,25 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SpawnerTool
+namespace SpawnerTool.Data
 {
+    [HelpURL("https://joanorba.gitbook.io/spawnertool/v/api/data/enemyfactory")]
     [CreateAssetMenu(fileName = "Enemy Prefabs", menuName = "SpawnerTool/EnemyPrefabs", order = -10)]
     public class EnemyFactory : ScriptableObject
     {
         [SerializeField] private ProjectSettings _projectSettings;
         [SerializeField] private List<GameObject> enemyPrefabs = new List<GameObject>();
-        
+
         private Dictionary<string, GameObject> _idToPrefab = new Dictionary<string, GameObject>();
 
+        /// <summary>
+        /// Returns dictionary of enemy prefabs
+        /// </summary>
+        /// <returns>Dictionary of enemy prefabs</returns>
         public Dictionary<string, GameObject> GetIdToPrefab()
         {
             return _idToPrefab;
         }
 
-        public GameObject GetEnemyPrefab(string enemy)
+        /// <summary>
+        /// Returns dictionary of enemy prefabs. Strings are enemy type, and GameObject are enemy Prefabs.
+        /// </summary>
+        /// <param name="enemyType">Type of enemy you want to get Prefab of</param>
+        /// <returns>Returns a Prefab given an enemy type</returns>
+        public GameObject GetEnemyPrefab(string enemyType)
         {
             GameObject prefab = null;
-            if (_idToPrefab.TryGetValue(enemy, out prefab))
+            if (_idToPrefab.TryGetValue(enemyType, out prefab))
             {
                 if (prefab == null)
                     throw new ArgumentNullException("SPAWNERTOOL: This enemy prefab is null. Make sure to add it.");
@@ -31,6 +41,7 @@ namespace SpawnerTool
             return prefab;
         }
 
+        #region Tool
         public void SaveToList()
         {
             enemyPrefabs.Clear();
@@ -42,11 +53,11 @@ namespace SpawnerTool
 
         public void LoadFromLists()
         {
-            for (int i = enemyPrefabs.Count-1; i < enemyPrefabs.Count-1; i++)
+            for (int i = enemyPrefabs.Count - 1; i < enemyPrefabs.Count - 1; i++)
             {
                 enemyPrefabs.Add(null);
             }
-            
+
             _idToPrefab.Clear();
             for (int i = 0; i < enemyPrefabs.Count; i++)
             {
@@ -68,5 +79,7 @@ namespace SpawnerTool
         {
             SaveToList();
         }
+
+        #endregion
     }
 }

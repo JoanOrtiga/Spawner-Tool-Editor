@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SpawnerTool
+namespace SpawnerTool.Runtime
 {
+    [HelpURL("https://joanorba.gitbook.io/spawnertool/v/api/runtime/spawnpointsidmanager")]
     public class SpawnPointsIDManager : MonoBehaviour
     {
         private Dictionary<int, Transform> _spawnPoints = new Dictionary<int, Transform>();
