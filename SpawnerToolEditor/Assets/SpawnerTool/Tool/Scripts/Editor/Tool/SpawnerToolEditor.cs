@@ -81,7 +81,7 @@ namespace SpawnerTool
 
         #region WindowOpening
 
-        [MenuItem("SpawnerTool/SpawnerTool", priority = 0)]
+        [MenuItem("SpawnerTool/SpawnerToolEditor #&t", priority = 0)]
         public static void ShowWindow()
         {
             InitializeWindow();
@@ -286,7 +286,7 @@ namespace SpawnerTool
 
         private void DrawTool()
         {
-            _roundField.Draw();
+            _roundField.Draw(); 
             _roundTotalTimeField.Draw();
             _tracksField.Draw();
             _gridMagnetField.Draw();
