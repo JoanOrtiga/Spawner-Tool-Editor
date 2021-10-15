@@ -6,42 +6,42 @@ namespace SpawnerTool.Data
     [System.Serializable]
     public class SpawnEnemyData
     {
-        private string _enemyType;
+        [SerializeField] private string _enemyType;
         public string EnemyType
         {
             get => _enemyType;
             set => _enemyType = value;
         }
         
-        private int _spawnPointID;
+        [SerializeField] private int _spawnPointID;
         public int SpawnPointID
         {
             get => _spawnPointID;
             set => _spawnPointID = value;
         }
         
-        private int _howManyEnemies;
+        [SerializeField] private int _howManyEnemies;
         public int HowManyEnemies
         {
             get => _howManyEnemies;
             set => _howManyEnemies = value;
         }
         
-        private float _timeToStartSpawning;
+        [SerializeField] private float _timeToStartSpawning;
         public float TimeToStartSpawning
         {
             get => _timeToStartSpawning;
             set => _timeToStartSpawning = value;
         }
 
-        private float _timeBetweenSpawn;
+        [SerializeField] private float _timeBetweenSpawn;
         public float TimeBetweenSpawn
         {
             get => _timeBetweenSpawn;
             set => _timeBetweenSpawn = value;
         }
 
-        private bool _isAlreadySpawned;
+        [SerializeField] private bool _isAlreadySpawned;
         public bool IsAlreadySpawned
         {
             get => _isAlreadySpawned;

@@ -7,14 +7,14 @@ namespace SpawnerTool.Data
     [System.Serializable]
     public class Round
     {
-        private List<SpawnEnemyData> _spawningEnemiesData;
+        [SerializeField] private List<SpawnEnemyData> _spawningEnemiesData;
         public List<SpawnEnemyData> SpawningEnemiesData
         {
             get => _spawningEnemiesData;
             set => _spawningEnemiesData = value;
         }
         
-        private float _totalRoundTime;
+        [SerializeField] private float _totalRoundTime;
         public float TotalRoundTime
         {
             get => _totalRoundTime;

@@ -7,6 +7,7 @@ namespace SpawnerTool.Data
 {
     [HelpURL("https://joanorba.gitbook.io/spawnertool/v/api/data/spawnergraph")]
     [CreateAssetMenu(fileName = "RoundsData", menuName = "SpawnerTool/SpawnerGraph", order = -5)]
+    [Serializable]
     public class SpawnerGraph : ScriptableObject
     {
         [SerializeField] private List<Round> _rounds = new List<Round>();
@@ -35,7 +36,8 @@ namespace SpawnerTool.Data
                 if (enemyData.IsAlreadySpawned)
                     continue;
 
-                if (enemyData.TimeToStartSpawning >= time)
+                Debug.Log(enemyData.TimeToStartSpawning);
+                if (enemyData.TimeToStartSpawning <= time)
                 {
                     enemyData.IsAlreadySpawned = true;
                     return enemyData;

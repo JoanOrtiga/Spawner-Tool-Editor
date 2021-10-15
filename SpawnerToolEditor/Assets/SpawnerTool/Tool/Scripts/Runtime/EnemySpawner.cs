@@ -72,7 +72,7 @@ namespace SpawnerTool.Runtime
         /// <returns></returns>
         public bool IsSpawnerFinished()
         {
-            return _enemiesToSpawn >= _spawnEnemyData.HowManyEnemies;
+            return _enemiesToSpawn > _spawnEnemyData.HowManyEnemies;
         }
     }
 }

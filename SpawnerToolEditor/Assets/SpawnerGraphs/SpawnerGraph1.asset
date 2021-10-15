@@ -1,0 +1,119 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88fe1dee91971014aaeaba60ebb786e0, type: 3}
+  m_Name: SpawnerGraph1
+  m_EditorClassIdentifier: 
+  _rounds:
+  - _spawningEnemiesData:
+    - _enemyType: High
+      _spawnPointID: 1
+      _howManyEnemies: 14
+      _timeToStartSpawning: 0
+      _timeBetweenSpawn: 1
+      _isAlreadySpawned: 1
+      CurrentTrack: 0
+    - _enemyType: Slow
+      _spawnPointID: 2
+      _howManyEnemies: 18
+      _timeToStartSpawning: 0
+      _timeBetweenSpawn: 1
+      _isAlreadySpawned: 1
+      CurrentTrack: 1
+    - _enemyType: High
+      _spawnPointID: 3
+      _howManyEnemies: 1
+      _timeToStartSpawning: 5
+      _timeBetweenSpawn: 1
+      _isAlreadySpawned: 1
+      CurrentTrack: 2
+    - _enemyType: Slow
+      _spawnPointID: 3
+      _howManyEnemies: 1
+      _timeToStartSpawning: 6
+      _timeBetweenSpawn: 1
+      _isAlreadySpawned: 1
+      CurrentTrack: 2
+    - _enemyType: High
+      _spawnPointID: 3
+      _howManyEnemies: 1
+      _timeToStartSpawning: 7
+      _timeBetweenSpawn: 1
+      _isAlreadySpawned: 1
+      CurrentTrack: 2
+    - _enemyType: Slow
+      _spawnPointID: 3
+      _howManyEnemies: 1
+      _timeToStartSpawning: 8
+      _timeBetweenSpawn: 1
+      _isAlreadySpawned: 1
+      CurrentTrack: 2
+    - _enemyType: High
+      _spawnPointID: 3
+      _howManyEnemies: 1
+      _timeToStartSpawning: 9
+      _timeBetweenSpawn: 1
+      _isAlreadySpawned: 1
+      CurrentTrack: 2
+    - _enemyType: Slow
+      _spawnPointID: 3
+      _howManyEnemies: 1
+      _timeToStartSpawning: 10
+      _timeBetweenSpawn: 1
+      _isAlreadySpawned: 1
+      CurrentTrack: 2
+    - _enemyType: High
+      _spawnPointID: 3
+      _howManyEnemies: 1
+      _timeToStartSpawning: 11
+      _timeBetweenSpawn: 1
+      _isAlreadySpawned: 1
+      CurrentTrack: 2
+    - _enemyType: Slow
+      _spawnPointID: 3
+      _howManyEnemies: 1
+      _timeToStartSpawning: 12
+      _timeBetweenSpawn: 1
+      _isAlreadySpawned: 1
+      CurrentTrack: 2
+    - _enemyType: High
+      _spawnPointID: 3
+      _howManyEnemies: 1
+      _timeToStartSpawning: 13
+      _timeBetweenSpawn: 1
+      _isAlreadySpawned: 0
+      CurrentTrack: 2
+    - _enemyType: Slow
+      _spawnPointID: 3
+      _howManyEnemies: 1
+      _timeToStartSpawning: 14
+      _timeBetweenSpawn: 1
+      _isAlreadySpawned: 0
+      CurrentTrack: 2
+    - _enemyType: Slow
+      _spawnPointID: 0
+      _howManyEnemies: 11
+      _timeToStartSpawning: 1
+      _timeBetweenSpawn: 0.34
+      _isAlreadySpawned: 1
+      CurrentTrack: 3
+    - _enemyType: Slow
+      _spawnPointID: 0
+      _howManyEnemies: 11
+      _timeToStartSpawning: 4
+      _timeBetweenSpawn: 3.75
+      _isAlreadySpawned: 1
+      CurrentTrack: 4
+    _totalRoundTime: 30
+    totalTracks: 11
+  - _spawningEnemiesData: []
+    _totalRoundTime: 25
+    totalTracks: 5

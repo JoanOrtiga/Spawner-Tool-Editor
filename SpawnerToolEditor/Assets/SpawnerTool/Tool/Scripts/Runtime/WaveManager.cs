@@ -17,11 +17,15 @@ namespace SpawnerTool.Runtime
 
         [SerializeField, Tooltip("This should have a reference to SpawnPointsIDManager manager.")]
         private SpawnPointsIDManager _spawnPointsIDManager;
+        public SpawnPointsIDManager CurrentSpawnPointsIDManager
+        {
+            get => _spawnPointsIDManager;
+            set => _spawnPointsIDManager = value;
+        } 
 
         [SerializeField, Tooltip("This should have a reference to a scriptable object of Enemy Factory.")]
         private EnemyFactory _enemyFactory;
-
-
+        
         [Header("Optional parameters")]
         //
         [SerializeField, Tooltip("Parent transform for spawned enemies")]
@@ -38,7 +42,7 @@ namespace SpawnerTool.Runtime
                                  "If false, you must call StartRound method again to start spawning")]
         private bool _startNewRoundAutomatically = true;
 
-        [SerializeField, Tooltip("Delay in seconds between last round and new round.")]
+        [SerializeField, Tooltip("Delay in seconds between last round and new round."), Min(0)]
         private float _delayBetweenRounds = 7f;
 
         [Space]
@@ -59,7 +63,7 @@ namespace SpawnerTool.Runtime
         [SerializeField, Tooltip("Disables debug settings.")]
         private bool _disableDebugSettings;
 
-        [SerializeField, Tooltip("Starting round in the game.")]
+        [SerializeField, Tooltip("Starting round in the game."), Min(0)]
         private int _starterRound;
 
 
@@ -67,6 +71,7 @@ namespace SpawnerTool.Runtime
         private int _currentRound = 0;
         private List<EnemySpawner> _enemySpawners = new List<EnemySpawner>();
 
+        
         /// <summary>
         /// Is round currently spawning enemies?
         /// </summary>
@@ -77,7 +82,7 @@ namespace SpawnerTool.Runtime
         /// </summary>
         public SpawnerGraph CurrentSpawnerGraph
         {
-            get { return _currentGraph; }
+            get => _currentGraph;
             set 
             { 
                 if(!IsRoundActive)
@@ -137,7 +142,7 @@ namespace SpawnerTool.Runtime
                 time = _roundTimer.GetCountUpTimer();
 
             sp = _currentGraph.GetSpawnEnemyDataByTime(_currentRound, time);
-
+            
             if (sp == null)
                 return;
             
