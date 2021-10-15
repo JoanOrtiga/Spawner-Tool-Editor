@@ -6,8 +6,8 @@ SpawnerTool Editor is a Unity Tool that focuses on games like Tower Defense, are
 
 ### ETA: 16/10/2021
 
-## I'm almost there, you can see the API here: https://joanorba.gitbook.io/spawnertool/v/api/ 
-## Manual is still being written and Tool still needs couple adjustments.
+### I'm almost there, you can see the API here: https://joanorba.gitbook.io/spawnertool/v/api/ 
+### Manual is still being written and Tool still needs couple adjustments.
 
 
 Current features:
