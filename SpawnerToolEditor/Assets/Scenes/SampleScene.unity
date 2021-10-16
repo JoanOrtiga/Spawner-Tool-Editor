@@ -666,8 +666,8 @@ MonoBehaviour:
   _enemyFactory: {fileID: 11400000, guid: 0efbdd63023103245b24921fadb1a7ac, type: 2}
   _parentToSpawnEnemies: {fileID: 641675469}
   _startSpawningOnAwake: 1
-  _startNewRoundAutomatically: 0
-  _delayBetweenRounds: 0
+  _startNewRoundAutomatically: 1
+  _delayBetweenRounds: 7
   OnRoundFinished:
     m_PersistentCalls:
       m_Calls: []
@@ -678,7 +678,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _disableDebugSettings: 0
-  _starterRound: 0
+  _starterRound: 2
 --- !u!4 &1953799513
 Transform:
   m_ObjectHideFlags: 0
