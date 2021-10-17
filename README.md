@@ -2,12 +2,11 @@
 
 SpawnerTool Editor is a Unity Tool that focuses on games like Tower Defense, arenas, or any game that needs round spawning system, or spawning system in general. In a totally visual way, you are able to customize spawn quantity, enemy type, spawn point, time between spawns, etc.... Tool is filled with examples, and it works out of the box.
 
-#### STILL IN DEVELOPMENT. IT WILL BE READY SOON. Until ETA, it's not usable.
+#### IT WILL BE READY SOON.
 
-### ETA: 16/10/2021
+### ETA: Unity is reviewing the submission
 
-### I'm almost there, you can see the API here: https://joanorba.gitbook.io/spawnertool/v/api/ 
-### Manual is still being written and Tool still needs couple adjustments.
+### See documentation herre: https://joanorba.gitbook.io/spawnertool/
 
 
 Current features:
