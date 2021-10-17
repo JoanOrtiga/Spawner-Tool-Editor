@@ -215,6 +215,16 @@ namespace SpawnerTool.EditorScripts
                     }
                 }
             }
+
+            if (e.type == EventType.MouseLeaveWindow)
+            {
+                _wantsToClone = false;
+            }
+
+            if (e.type == EventType.ScrollWheel)
+            {
+                _wantsToClone = false;
+            }
         }
         
         public void Update()

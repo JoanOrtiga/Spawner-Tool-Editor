@@ -243,7 +243,6 @@ namespace SpawnerTool.EditorScripts
 
         private void Update()
         {
-            
             if (UnityEditor.EditorWindow.focusedWindow is SpawnerToolEditor)
                 return;
 
